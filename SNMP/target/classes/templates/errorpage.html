@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+<title>Error</title>
+<script >
+
+function signOut() {
+	
+	console.log('sign out.');
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+   
+  });
+  window.location="/";
+}
+
+function onLoad() {
+	console.log('Onload called');
+  gapi.load('auth2', function() {
+    gapi.auth2.init();
+    
+  });
+ 
+}
+//$('document').ready(function(){signOut();});
+
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<h1 th:text="${code}">
+
+</h1>
+
+</head>
+<body>
+<input type="button" value="Return to login" onclick="signOut()">
+</input>
+
+</body>
+</html>

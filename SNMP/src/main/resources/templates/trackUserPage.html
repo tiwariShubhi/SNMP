@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1"></meta>
+<title>Track a user</title>
+</head>
+<body>
+	<ul th:each = "obj:${logs}">
+	<li th:text = 
+	"${obj.log.cldcClientMacAddress +obj.log.bsnStationMacAddress +obj.log.oid + obj.startTime + obj.endTime + obj.duration +obj.log.cLApName + obj.log.bsnAPName}"></li>
+	
+	
+	
+	</ul>
+	
+</body>
+</html>

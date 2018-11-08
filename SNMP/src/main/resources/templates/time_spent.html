@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+
+       <meta charset="utf-8"></meta>
+    <title>Time Spent | Track Yourself</title>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custommaterialize.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custom-chip.css}" />
+    
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custommain.css}"/>
+    
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.1.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/highcharts-more.js"></script>
+
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>
+     <script th:inline="javascript">
+/*<![CDATA[*/
+    
+    function GetURLParameter(sParam)
+    
+    {
+    
+        var sPageURL = window.location.search.substring(1);
+    
+        var sURLVariables = sPageURL.split('&');
+    
+        for (var i = 0; i < sURLVariables.length; i++)
+    
+        {
+    
+            var sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] == sParam)
+    
+            {
+    
+                return sParameterName[1];
+    
+            }
+    
+        }
+    
+    }
+    
+    
+    function produceMessage(msg){
+  	  /* not supported in IE - startswith() :|  */  
+  	  var out;
+  	  var num=-1;
+  	  if(msg.startsWith("BH")){
+  		  out = "Boys Hostel";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  
+  	  else if(msg.startsWith("OUTDOOR_HS"))
+  		  out = "Outside Hostel";
+  	  
+  	  else if(msg.startsWith("OUTDOOR_LH"))
+  		  out = "Outside Lecture Halls";
+  	  
+  	  else if(msg.startsWith("ACB")){
+  		  out = "Academic Building";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  
+  	  else if(msg.startsWith("LCB")){
+  		  out = "Lecture Block";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  else if(msg.startsWith("LB")){
+  		  out = "Library Building";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  else if(msg.startsWith("GH")){
+  		  out = "Girls Hostel";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  
+  	  else if(msg.startsWith("SRB")){
+  		  out = "Service Block";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  
+  	  else if(msg.startsWith("DB")){
+  		  out = "Dining Block";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  else if(msg.startsWith("RESB")){
+  		  out = "Faculty Residence";
+  		  num = msg.match(/\d+/)[0];
+  				  	
+  	  }
+  	  else 
+  		  out=msg;
+  	  
+  	  //console.log(num);
+  	  
+  	  if(num != -1)
+  		  out = out.concat(" Floor ".concat(num.toString()));
+  	  
+  	  return out;
+  	}
+    
+   function setColor(loc){
+   
+        switch(loc){
+        
+            case "BH0FAP": return "#feb1d4";
+            case "BH1FAP": return "#0a79b6";
+            case "BH2FAP": return "#169190";
+            case "BH3FAP": return "#9d7480";
+            case "BH4FAP": return "#123714";
+            case "BH5FAP": return "#778F9D";
+            case "BH6FAP": return "#87ECF0";
+            case "GH0FAP": return "#D02090";
+            case "GH1FAP": return "#768347";
+            case "GH2FAP": return "#F18087";
+            case "GH3FAP": return "#154FA1";
+            case "GH4FAP": return "#D4444A";
+            case "GH5FAP": return "#8B6B6E";
+            case "GH6FAP": return "#1E2D00";
+            case "LB0FAP": return "#442A42";
+            case "LB1FAP": return "#FFA700";
+            case "LB2FAP": return "#EE82EE";
+            case "LB3FAP": return "#FA225D";
+            case "DB0FAP": return "#84C103";
+            case "DB1FAP": return "#3599B7";
+            case "DB2FAP": return "#FFA22F";
+            case "DB3FAP": return "#6E5550";
+            case "RESB0FAP": return "#E691C8";
+            case "RESB1FAP": return "#4E112D";
+            case "RESB2FAP": return "#0057E7";
+            case "RESB3FAP": return "#492A08";
+            case "RESB4FAP": return "#99C51C";
+            case "RESB5FAP": return "#EAE57E";
+            case "RESB6FAP": return "#C186A4";
+            case "RESB7FAP": return "#5A4B3C";
+            case "RESB8FAP": return "#345435";
+            case "RESB9FAP": return "#F65E61";
+            case "RESB10FAP": return "#F1EBA0";
+            case "RESB11FAP": return "#9810D5";
+            case "RESB12FAP": return "#AF7D92";
+            case "ACB0FAP": return "#464128";
+            case "ACB1FAP": return "#4E112D";
+            case "ACB2FAP": return "#3C69FF";
+            case "ACB3FAP": return "#492970";
+            case "ACB4FAP": return "#F28F43";
+            case "ACB5FAP": return "#77A1E5";
+            case "LCB0FAP": return "#910000";
+            case "LCB1FAP": return "#8BBC21";
+            case "LCB2FAP": return "#C42525";
+            case "SRB0FAP": return "#A6C96A";
+            case "SRB1FAP": return "#1AADCE";
+            case "SRB2FAP": return "#4572A7";
+            case "OUTDOOR_HS": return "#AA4643";
+            case "OUTDOOR_LH": return "#DB843D";
+            
+        }
+   
+   }
+  	 
+   $.ajaxSetup({
+	    beforeSend: function() {
+	        // TODO: show your spinner
+	        $('#ajaxSpinner').show();
+	    },
+	    complete: function() {
+	        // TODO: hide your spinner
+	        $('#ajaxSpinner').hide();
+	    }
+	});
+    
+    /*]]>*/	
+    </script>
+  </head>
+
+  <body class="joy">
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>Time <br/> Spent</a>
+      </h1>
+
+    <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+      <nav class="nav-joy primary-nav-joy">
+        <ul>
+        <li><a id="profile">Profile</a></li>
+        <li><a id="timeline">Timeline</a></li>
+        <li><a id="timeline_charts">Timeline Charts</a></li>
+        <li><a style="color:#648880;">Time Spent</a></li>
+        <li><a id="custom_attendance">Custom Presence</a></li>
+        <li><a id="home">Home</a></li>
+          <li><a id="signout">Sign Out</a></li>
+          
+             </ul>
+      </nav>
+	
+      
+    </header>
+
+    <!-- Lead -->
+
+    <section class="row-alt">
+      <div class="lead container">
+		
+           
+       <div class="chip" id="name">
+			<label for="filled-in-box1" style="height:17px;" ></label>
+       Tag</div>
+		
+			
+			<div id="savehash" style="display:none;">
+				<button id = "savebtn" type ="button" class="btn btn-default"  value="save" >Save Hash</button><br/>			
+ 				
+ 				</div>
+    
+        
+        <p>Location versus Time spent</p>
+        
+     
+    <div id="datebar">
+      			 from 
+      			 <input type="date"  class="datepicker" id = "from" style="margin:0 15px 0 15px; width:inherit;"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;until
+				<input type="date"  class ="datepicker" id="to" style="margin:0 15px 0 15px; width:inherit;"/>
+				<button id = "btn" type ="button" class="btn btn-default"  value="Go" >Go</button>
+				 </div>
+
+      </div>
+    </section>
+
+    <!-- Main content -->
+    
+   
+      
+      
+    
+      
+    
+       <section class="row">
+      <div class="container">
+        
+        <!-- <h1 id ="timespent" style="text-align: center;">
+	
+	
+	</h1>
+	 -->
+	
+	
+	
+    <div id="donutchart" style="width: 900px; height: 500px;  margin:auto;">
+    		<p id="notpresent" style="text-align:center;"></p>
+    </div>
+
+      </div>
+    </section>
+	
+	
+		<!-- Scripts -->
+		
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+      <script th:inline="javascript">
+/*<![CDATA[*/
+           $(document).ready(function(){
+ 
+ 		$.get("/hmacinfo",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+       
+   		
+   		
+	   		if(data == "HashedMacNotFound"){
+	   			$("#name").html(GetURLParameter('hashedmac'));
+	   			$("#savehash").slideDown("slow", function(){});
+	   			console.log("data");
+	   		}
+	   		else{
+	   			var json = JSON.parse(data);
+	   			var child = $("#name").children();
+	   			$("#name").html(json.name);
+	   			$("#name").prepend(child);
+	   			console.log(json.name);
+	   		}
+	   		//alert("Data: " + data + "\nStatus: " + status);
+	   	});
+ 		
+ 		
+ 		$("#savebtn").click(function(){
+ 			console.log("saving hash");
+ 			
+ 			
+ 			var text = GetURLParameter('hashedmac')+" \n\nYou can save your hashed MAC, so that you need not type it again.\nDon't worry! your hashed MAC is completely hidden from any prying eyes.\n\nPlease name your device.";
+ 		
+ 			
+ 			var name = prompt(text);
+ 		     
+ 		     if (name) {
+ 		    	$.get("/addhmac",{hashedmac : GetURLParameter('hashedmac'), name: name}, function(data, status){
+ 	 				window.location.reload();
+ 	 				alert("Added succesfully! " );
+ 	 			}); 
+ 		    	
+ 		     }
+ 		     else alert("Snap! You pressed Cancel or no value was entered!");
+ 			
+ 			/* $.get("/addhmac",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+ 				window.location.reload(); 
+ 			}); */
+ 		})
+ 		
+ 		
+});
+
+   var jsonbaba;
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   
+   
+   $(document).ready(function(){
+    $("#signout").click(function(){
+    	console.log('sign out.');
+    	  var auth2 = gapi.auth2.getAuthInstance();
+    	  auth2.signOut().then(function () {
+    	    console.log('User signed out.');
+    	   
+    	  });
+    	  window.location="/";
+    });
+    $("#timeline").click(function(){
+   			console.log("jai mata di!"); 	
+   			window.location ="/admin/trackuser?hashedmac="+GetURLParameter('hashedmac');
+   			// $.get("/admin/trackuser",{ hashedmac: GetURLParameter('hashedmac')})
+    });
+    
+    $("#timeline_charts").click(function(){
+			console.log("jai mata di!"); 	
+			window.location ="/admin/trackuser/charts?hashedmac="+GetURLParameter('hashedmac');
+			
+	});
+    $("#home").click(function(){
+			//console.log("jai mata di!"); 	
+	  
+			window.location ="/welcome";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+    $("#profile").click(function(){
+		console.log("jai mata di!"); 	
+  
+		window.location ="/admin/profile?hashedmac="+GetURLParameter('hashedmac');
+		
+		//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+    $("#custom_attendance").click(function(){
+		console.log("jai mata di!"); 	
+		window.location ="/admin/custom-attendance?hashedmac="+GetURLParameter('hashedmac');
+		
+	});
+
+    
+   
+ $( "#to" ).prop( "disabled", true );
+ $( "#btn" ).prop( "disabled", true );
+ 
+ google.charts.load("current", {packages:["corechart"]});
+ google.charts.setOnLoadCallback();
+});
+   
+  
+   function drawChart() {
+	   		
+	   var arr = [
+	  	        ['Location', 'Minutes'],
+	  	        ['Library 0 Floor',     jsonbaba.libraryBuilding[0] ],
+	  	        ['Library 1 Floor',      jsonbaba.libraryBuilding[1]],
+	  	        ['Library 2 Floor',  jsonbaba.libraryBuilding[2]],
+	  	        ['Library 3 Floor', jsonbaba.libraryBuilding[3]],
+	  	        ['Academic 0 Floor', jsonbaba.academicBuilding[0]],
+	  	        ['Academic 1 Floor', jsonbaba.academicBuilding[1]],
+	  	        ['Academic 2 Floor', jsonbaba.academicBuilding[2]],
+	  	        ['Academic 3 Floor', jsonbaba.academicBuilding[3]],
+	  	        ['Academic 4 Floor', jsonbaba.academicBuilding[4]],
+	  	        ['Academic 5 Floor', jsonbaba.academicBuilding[5]],
+	  	        ['Lecture 0 Floor', jsonbaba.lectureBlock[0]],
+	  	        ['Lecture 1 Floor', jsonbaba.lectureBlock[1]],
+	  	        ['Lecture 2 Floor', jsonbaba.lectureBlock[2]],
+	  	        ['Boys Hostel 0 Floor', jsonbaba.boysHostel[0]],
+	  	        ['Boys Hostel 1 Floor', jsonbaba.boysHostel[1]],
+	  	        ['Boys Hostel 2 Floor', jsonbaba.boysHostel[2]],
+	  	        ['Boys Hostel 3 Floor', jsonbaba.boysHostel[3]],
+	  	        ['Boys Hostel 4 Floor', jsonbaba.boysHostel[4]],
+	  	        ['Boys Hostel 5 Floor', jsonbaba.boysHostel[5]],
+	  	        ['Boys Hostel 6 Floor', jsonbaba.boysHostel[6]],
+	  	        ['Girls Hostel 0 Floor', jsonbaba.girlsHostel[0]],
+	  	        ['Girls Hostel 1 Floor', jsonbaba.girlsHostel[1]],
+	  	        ['Girls Hostel 2 Floor', jsonbaba.girlsHostel[2]],
+	  	        ['Girls Hostel 3 Floor', jsonbaba.girlsHostel[3]],
+	  	        ['Girls Hostel 4 Floor', jsonbaba.girlsHostel[4]],
+	  	        ['Girls Hostel 5 Floor', jsonbaba.girlsHostel[5]],
+	  	        ['Girls Hostel 5 Floor', jsonbaba.girlsHostel[6]],
+	  	        ['Service Block 0 Floor', jsonbaba.serviceBlock[0]],
+	  	        ['Service Block 1 Floor', jsonbaba.serviceBlock[1]],
+	  	        ['Service Block 2 Floor', jsonbaba.serviceBlock[2]],
+	  	        ['Dining Block 0 Floor', jsonbaba.diningBlock[0] ],
+	  	        ['Dining Block 1 Floor', jsonbaba.diningBlock[1] ],
+	  	        ['Dining Block 2 Floor', jsonbaba.diningBlock[2] ],
+	  	        ['Dining Block 3 Floor', jsonbaba.diningBlock[3] ],
+	  	        ['Faculty Residence 0 Floor', jsonbaba.facultyResidence[0] ],
+	  	        ['Faculty Residence 1 Floor', jsonbaba.facultyResidence[1] ],
+	  	        ['Faculty Residence 2 Floor', jsonbaba.facultyResidence[2] ],
+	  	        ['Faculty Residence 3 Floor', jsonbaba.facultyResidence[3] ],
+	  	        ['Faculty Residence 4 Floor', jsonbaba.facultyResidence[4] ],
+	  	        ['Faculty Residence 5 Floor', jsonbaba.facultyResidence[5] ],
+	  	        ['Faculty Residence 6 Floor', jsonbaba.facultyResidence[6] ],
+	  	        ['Faculty Residence 7 Floor', jsonbaba.facultyResidence[7] ],
+	  	        ['Faculty Residence 8 Floor', jsonbaba.facultyResidence[8] ],
+	  	        ['Faculty Residence 9 Floor', jsonbaba.facultyResidence[9] ],
+	  	        ['Faculty Residence 10 Floor', jsonbaba.facultyResidence[10] ],
+	  	        ['Faculty Residence 11 Floor', jsonbaba.facultyResidence[11] ],
+	  	        ['Faculty Residence 12 Floor', jsonbaba.facultyResidence[12] ],
+	  	        ['Outside Hostel', jsonbaba.outsideHostel[0] ],
+	  	        ['Outside Library', jsonbaba.outsideLibrary[0] ],
+	  	        ['Disconnected',    jsonbaba.disconnected[0] ]
+	  	      ];
+	   	
+	   var res=[];  
+	   console.log(String(arr));
+       for (item in arr){
+        if(arr[item][1]!=0){
+        	if(item!=0)
+        		arr[item][1] = Math.round((arr[item][1])/(1000*60));
+        	if(arr[item][1]>1 || item==0)
+        		res.push(arr[item]);
+        }
+       }
+       console.log(String(res));
+	      var data = google.visualization.arrayToDataTable(res);
+
+	      var options = {
+	        
+	        vAxis: {
+                title:"Minutes spent (Log Axis)",
+                logScale:true
+              },
+              annotations: {
+            	  alwaysOutside: true,
+                  textStyle: {
+                    fontSize: 12,
+                    color: '#000',
+                    auraColor: 'none'
+                  }
+                }
+	              };
+	      
+
+	      var chart = new google.visualization.ColumnChart(document.getElementById('donutchart'));
+	      chart.draw(data, options);
+	    }
+   
+   
+   function getTimespent(from, to){
+	   
+	   $.get("/metric/timespent",{ hashedmac: GetURLParameter('hashedmac'), from: from, to: to}, 
+			   function(data, status){
+		   
+		   
+		   
+		   if(data != "--Not Present--"){
+		 	/* $("#timespent").text(data); */
+		 	jsonbaba = JSON.parse(data);
+		 	//alert("Data: " + data + "\nStatus: " + status);
+		 	console.log(jsonbaba);
+		 	drawChart();
+
+		 }
+		    
+		    else{
+				   
+				   $("#notpresent").html(data);
+			   }
+		    
+		 });
+	   
+	   
+   }
+   
+   
+  
+   
+   $("#btn").click(function(){
+			console.log("jai mata di!"); 	
+			var $inputfrom = $('#from').pickadate();
+	   		var pickerfrom = $inputfrom.pickadate('picker');
+	   	  	
+	   	 	var $inputto = $('#to').pickadate();
+			var pickerto = $inputto.pickadate('picker');
+			getTimespent(pickerfrom.get('highlight').obj.getTime(), pickerto.get('highlight').obj.getTime());
+			
+			/* 
+			var location = "/admin/trackuser/duration?hashedmac="
+					+GetURLParameter('hashedmac')
+					+"&from="+pickerfrom.get('highlight').obj.getTime()
+					+"&to="+pickerto.get('highlight').obj.getTime()
+					;
+			console.log(location);
+			
+			 */
+			 
+			 //$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+			 
+			 
+	});
+	
+   
+  
+   
+   
+   $('#from').pickadate({
+	    selectMonths: true, // Creates a dropdown to control month
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    min: new Date(2015,11,1),
+  		max: true,
+  		onClose: function() {
+ 	        $(document.activeElement).blur();
+ 	    },
+  		onSet:function(){
+  			$( "#to" ).prop( "disabled", false );
+  		 var $inputfrom = $('#from').pickadate();
+  		var pickerfrom = $inputfrom.pickadate('picker');
+  	  	
+  	 var $inputto = $('#to').pickadate();
+		var pickerto = $inputto.pickadate('picker');
+	  	
+		pickerto.set('min',pickerfrom.get('highlight').obj);
+  		}
+	    
+	  });
+	
+  $('#to').pickadate({
+	    selectMonths: true, // Creates a dropdown to control month
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    min: new Date(2015,11,1),
+ 		max: true,
+ 		onClose: function() {
+ 	        $(document.activeElement).blur();
+ 	    },
+ 		onSet: function(){
+ 			$( "#btn" ).prop( "disabled", false );
+ 		}
+	    
+	  });
+   
+  var $inputfrom = $('#from').pickadate();
+	var pickerfrom = $inputfrom.pickadate('picker');
+	
+	var $inputto = $('#to').pickadate();
+	var pickerto = $inputto.pickadate('picker');
+	var date = new Date();
+	
+	pickerto.set('select', date);
+	date.setDate(date.getDate()-1);
+	pickerfrom.set('select', date);
+	
+	
+	$("#btn").trigger('click');
+	
+	
+	
+   /*]]>*/	
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+    
+
+    <footer class="primary-footer-joy container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+
+      
+    </footer>
+ 
+  </body>
+</html>

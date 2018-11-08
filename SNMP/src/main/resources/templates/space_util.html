@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"/>
+<title>Space Utilisation | Track Yourself</title>
+
+</head>
+<body>
+
+<div id="container" style="min-width: 310px; height: 1000px; margin: 0 auto"></div>
+
+ <script th:inline="javascript">
+/*<![CDATA[*/
+           
+           
+           function GetURLParameter(sParam)
+    
+    {
+    
+        var sPageURL = window.location.search.substring(1);
+    
+        var sURLVariables = sPageURL.split('&');
+    
+        for (var i = 0; i < sURLVariables.length; i++)
+    
+        {
+    
+            var sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] == sParam)
+    
+            {
+    
+                return sParameterName[1];
+    
+            }
+    
+        }
+    
+    }
+    
+    function convertToDate(data){
+    	//console.log("i m here");
+    	for (var i in data){
+    		var event = data[i].data;
+    		
+    		for( var j in event ){
+    			//console.log(event[j].low);
+    			event[j].low = Date.UTC(event[j].low);
+    			event[j].high = Date.UTC(event[j].high);
+    		}
+    		
+    	}
+    	
+    }
+    
+  /*   $.get("/data/weeklyacadarea",{ hashedmac: GetURLParameter('hashedmac')	}, function(data, status){
+    	
+			data = JSON.parse(data);		
+		  convertToDate(data);
+		  console.log (data);
+		  console.log(new Date());
+    }); */
+    
+    
+    
+
+    function displayCharts(place, floor, people) {
+    	
+    	$.get("/admin/data/spaceutil",{ place: place+floor, people:people}
+	 	  , function(data, status){
+	         	console.log("data");
+	         	data = JSON.parse(data);
+	 		 	var series = data.series;
+	 		 	data = data.drilldown;
+	         console.log(data);
+	       	
+	      		
+	         
+	         Highcharts.setOptions({
+	             lang: {
+	                 drillUpText: '< Go Back'
+	             }
+	         });
+
+		    	
+		        // Create the chart
+		        $('#container').highcharts({
+		            chart: {
+		                type: 'column',
+		                events: {
+		                    drilldown: function (e) {
+		                        if (!e.seriesOptions) {
+		                            var chart = this,
+		                                drilldowns0 = data.drilldown[0],
+		                                drilldowns1 = data.drilldown[1]
+		                                	,
+		                                drilldowns2 = data.drilldown[2]
+		                                	,
+		                                drilldowns3 = data.drilldown[3]
+		                                	,
+		                                drilldowns4 = data.drilldown[4]
+		                                	,
+		                                drilldowns5 = data.drilldown[5]
+		                                	,
+		                                drilldowns6 = data.drilldown[6]
+		                                	,
+		                                drilldowns7 = data.drilldown[7]
+		                                	,
+		                                drilldowns8 = data.drilldown[8]
+		                                	,
+		                                drilldowns9 = data.drilldown[9]
+		                                	,
+		                                drilldowns10 = data.drilldown[10]
+		                                	,
+		                                drilldowns11 = data.drilldown[11]
+		                                	,
+		                                drilldowns12 = data.drilldown[12]
+		                                	,
+		                                drilldowns13 = data.drilldown[13]
+		                                	,
+		                                drilldowns14 = data.drilldown[14]
+		                                	,
+		                                drilldowns15 = data.drilldown[15]
+		                                	,
+		                                drilldowns16 = data.drilldown[16]
+		                                	,
+		                                drilldowns17 = data.drilldown[17]
+		                                	,
+		                                drilldowns18 = data.drilldown[18]
+		                                	,
+		                                drilldowns19 = data.drilldown[19]
+		                                	,
+		                                drilldowns20 = data.drilldown[20]
+		                                	,
+		                                drilldowns21 = data.drilldown[21]
+		                                	,
+		                                drilldowns22 = data.drilldown[22]
+		                                	,
+		                                drilldowns23 = data.drilldown[23]
+		                                	,
+		                                
+		                            series0 = drilldowns0[e.point.name],
+		                            series1 = drilldowns1[e.point.name];
+		                            series2 = drilldowns2[e.point.name],
+		                            series3 = drilldowns3[e.point.name];
+		                            series4 = drilldowns4[e.point.name],
+		                            series5 = drilldowns5[e.point.name];
+		                            series6 = drilldowns6[e.point.name],
+		                            series7 = drilldowns7[e.point.name];
+		                            series8 = drilldowns8[e.point.name],
+		                            series9 = drilldowns9[e.point.name];
+		                            series10 = drilldowns10[e.point.name],
+		                            series11 = drilldowns11[e.point.name];
+		                            series12 = drilldowns12[e.point.name],
+		                            series13 = drilldowns13[e.point.name];
+		                            series14 = drilldowns14[e.point.name],
+		                            series15 = drilldowns15[e.point.name];
+		                            series16 = drilldowns16[e.point.name],
+		                            series17 = drilldowns17[e.point.name];
+		                            series18 = drilldowns18[e.point.name],
+		                            series19 = drilldowns19[e.point.name];
+		                            series20 = drilldowns20[e.point.name],
+		                            series21 = drilldowns21[e.point.name];
+		                            series22 = drilldowns22[e.point.name],
+		                            series23 = drilldowns23[e.point.name];
+		                            chart.addSingleSeriesAsDrilldown(e.point, series0); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series1);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series2); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series3);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series4); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series5);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series6); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series7);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series8); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series9);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series10); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series11);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series12); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series13);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series14); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series15);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series16); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series17);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series18); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series19);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series20); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series21);
+		                            chart.addSingleSeriesAsDrilldown(e.point, series22); 
+		                            chart.addSingleSeriesAsDrilldown(e.point, series23);
+		                            chart.applyDrilldown();
+		                        }
+		                    }
+		                }
+		            },
+		            credits :{
+	            	    enabled:false
+	            	 },
+	        exporting: {
+	            	    enabled:false
+	            	 },
+	        
+	        title: {
+	            text: 'Crowd Analysis'
+	        },
+	        subtitle: {
+	            text: 'Click the columns for detailed month view.'
+	        },
+	        xAxis: {
+	            type: 'category',
+	            
+	        },
+	        yAxis: {
+			                min: 0,
+			                title: {
+			                    text: 'Man-Minutes'
+			                },
+			                stackLabels: {
+			                    enabled: true,
+			                    style: {
+			                        fontWeight: 'bold',
+			                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+			                    }
+			                }
+	                    
+			            },
+	        legend: {
+	            enabled: true,
+	            borderColor: '#CCC',
+	            borderWidth: 1,
+	        },
+	        plotOptions: {
+	        column: {stacking: 'normal'},
+	            series: {
+	                borderWidth: 0,
+	                dataLabels: {
+	                    enabled: true,
+	                    style: { textShadow: false}
+	                }
+	            }
+	        },
+		            series: series,
+		            drilldown: {
+		                series: []
+		            }
+		        });
+		    });  
+
+    };       
+
+    
+    
+    
+    $(document).ready(function(){
+    	
+    	displayCharts(GetURLParameter('place'),"",GetURLParameter('people'));
+    	
+    	
+    });
+   /*]]>*/	
+</script>
+
+</body>
+</html>

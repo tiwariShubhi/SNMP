@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+  
+
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+
+<script src="//code.jquery.com/jquery-2.1.1.js"></script>
+   
+
+
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custommaterialize.css}"/>
+    
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custom-chip.css}" />
+  
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custommain.css}"/>
+
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.3/fullcalendar.js"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.3/fullcalendar.css" rel="stylesheet"/>
+
+<title>Calendar</title>
+
+</head>
+<body>
+
+   
+      <section class="row">
+		<div class="container">
+			<div id="calendar" style="max-width:900px;"></div>
+		</div>
+	</section>
+    
+   
+	
+
+
+ <script th:inline="javascript">
+/*<![CDATA[*/
+           
+           
+           
+          $(document).ready(function() {
+		
+       	console.log(/*[[${attendance.attendList}]]*/);
+		$('#calendar').fullCalendar({
+			header: {
+				right: 'prev,next today',
+				center: 'title',
+				left: ''
+			},
+			
+			events : /*[[${attendance.attendList}]]*/
+			
+			
+		});
+		
+	});
+
+
+   /*]]>*/	
+</script>
+
+</body>
+</html>

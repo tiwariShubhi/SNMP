@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+  
+
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+
+<script src="//code.jquery.com/jquery-2.1.1.js"></script>
+   
+
+
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custommaterialize.css}"/>
+    
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custom-chip.css}" />
+  
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custommain.css}"/>
+
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.3/fullcalendar.js"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.3/fullcalendar.css" rel="stylesheet"/>
+
+<title>Custom Presence | Track Yourself</title>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    
+    function GetURLParameter(sParam)
+    
+    {
+    
+        var sPageURL = window.location.search.substring(1);
+    
+        var sURLVariables = sPageURL.split('&');
+    
+        for (var i = 0; i < sURLVariables.length; i++)
+    
+        {
+    
+            var sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] == sParam)
+    
+            {
+    
+                return sParameterName[1];
+    
+            }
+    
+        }
+    
+    }
+    
+    
+  	 
+   $.ajaxSetup({
+	    beforeSend: function() {
+	        // TODO: show your spinner
+	        $('#ajaxSpinner').show();
+	    },
+	    complete: function() {
+	        // TODO: hide your spinner
+	        $('#ajaxSpinner').hide();
+	    }
+	});
+    
+    /*]]>*/	
+    </script>
+</head>
+<body class="joy">
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>Custom <br/> Presence</a>
+      </h1>
+
+    <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+      <nav class="nav-joy primary-nav-joy">
+        <ul>
+        <li><a id="profile">Profile</a></li>
+        <li><a id="timeline">Timeline</a></li>
+        <li><a id="timeline_charts">Timeline Charts</a></li>
+        <li><a id="time_spent">Time Spent</a></li>
+        <li><a id="custom_attendance" style="color:#648880;">Custom Presence</a></li>
+        <li><a id="home">Home</a></li>
+          <li><a id="signout">Sign Out</a></li>
+        
+             </ul>
+      </nav>
+	
+      
+    </header>
+
+    <!-- Lead -->
+
+         
+      <section class="row-alt row" style="margin-bottom:0px;">
+      <div class="lead container">
+		
+		<div class="chip" id="name">
+			<label for="filled-in-box1" style="height:17px;" ></label>
+       Tag</div>
+		
+			
+			<div id="savehash" style="display:none;">
+				<button id = "savebtn" type ="button" class="btn btn-default"  value="save" >Save Hash</button><br/>			
+ 				
+ 				</div>
+    
+		
+		 
+
+        <p>Select place of work, working hours &amp; minimum number of work hours</p>
+        
+    	
+		<div class="input-field col s4 offset-s4">
+		    <select id = "location">
+		      
+		      <option selected="selected" value="2">Academic Building</option>
+		      <option value="3">Library Building</option>
+		      <option value="4">Lecture Block</option>
+		      <option value="5">M.Tech labs</option>
+		      <option value="0">Academic, Library &amp; Lecture Buildings</option>
+			  <option value="1">Academic, Library, Lecture &amp; M.tech labs</option>
+			  <option value="6">IIIT-Delhi</option>
+			  
+		    </select>
+		    <label style="color: #293f50;">Location</label>
+		</div>
+		<div class="input-field col s2 offset-s3">
+		    <select id="from">
+		      
+		      <option value="0">12 AM</option>
+		      <option value="1">1 AM</option>
+		      <option value="2">2 AM</option>
+		      <option value="3">3 AM</option>
+		      <option value="4">4 AM</option>
+		      <option value="5">5 AM</option>
+		      <option value="6">6 AM</option>
+		      <option value="7">7 AM</option>
+		      <option value="8">8 AM</option>
+		      <option value="9">9 AM</option>
+		      <option selected="selected" value="10">10 AM</option>
+		      <option value="11">11 AM</option>
+		      <option value="12">12 PM</option>
+		      <option value="13">1 PM</option>
+		      <option value="14">2 PM</option>
+		      <option value="15">3 PM</option>
+		      <option value="16">4 PM</option>
+		      <option value="17">5 PM</option>
+		      <option value="18">6 PM</option>
+		      <option value="19">7 PM</option>
+		      <option value="20">8 PM</option>
+		      <option value="21">9 PM</option>
+		      <option value="22">10 PM</option>
+		      <option value="23">11 PM</option>
+		      
+		      
+		    </select>
+		    <label style="color: #293f50;">From</label>
+		</div>
+		<div class="input-field col s2 ">
+		    <select id="to">
+		      
+		      
+		      <option value="1">1 AM</option>
+		      <option value="2">2 AM</option>
+		      <option value="3">3 AM</option>
+		      <option value="4">4 AM</option>
+		      <option value="5">5 AM</option>
+		      <option value="6">6 AM</option>
+		      <option value="7">7 AM</option>
+		      <option value="8">8 AM</option>
+		      <option value="9">9 AM</option>
+		      <option value="10">10 AM</option>
+		      <option value="11">11 AM</option>
+		      <option value="12">12 PM</option>
+		      <option value="13">1 PM</option>
+		      <option value="14">2 PM</option>
+		      <option value="15">3 PM</option>
+		      <option value="16">4 PM</option>
+		      <option value="17">5 PM</option>
+		      <option selected="selected" value="18">6 PM</option>
+		      <option value="19">7 PM</option>
+		      <option value="20">8 PM</option>
+		      <option value="21">9 PM</option>
+		      <option value="22">10 PM</option>
+		      <option value="23">11 PM</option>
+		      
+		      
+		      
+		    </select>
+		    <label style="color: #293f50;" >Until</label>
+		</div>
+		<div class="input-field col s2 ">
+		    <select id="hours">
+		      
+		      <option  selected="selected" value="0">Any</option>
+		      <option value="1">&gt; 1 Hour</option>
+		      <option value="2">&gt; 2 Hours</option>
+		      <option value="3">&gt; 3 Hours</option>
+		      <option value="4">&gt; 4 Hours</option>
+		      <option value="5">&gt; 5 Hours</option>
+		      <option value="6">&gt; 6 Hours</option>
+		      <option value="7">&gt; 7 Hours</option>
+		      <option value="8">&gt; 8 Hours</option>
+		      <option value="9">&gt; 9 Hours</option>
+		      <option value="10">&gt; 10 Hours</option>
+		      <option value="11">&gt; 11 Hours</option>
+		      <option value="12">&gt; 12 Hours</option>
+		      <option value="13">&gt; 13 Hours</option>
+		      <option value="14">&gt; 14 Hours</option>
+		      <option value="15">&gt; 15 Hours</option>
+		      <option value="16">&gt; 16 Hours</option>
+		      <option value="17">&gt; 17 Hours</option>
+		      <option value="18">&gt; 18 Hours</option>
+		      <option value="19">&gt; 19 Hours</option>
+		      <option value="20">&gt; 20 Hours</option>
+		      <option value="21">&gt; 21 Hours</option>
+		      <option value="22">&gt; 22 Hours</option>
+		      <option value="23">&gt; 23 Hours</option>
+		      
+		    </select>
+		    <label style="color: #293f50;" >Number of hours</label>
+		</div>
+		<p><br/></p>
+		<div class="col s2 offset-s5">
+		<button id = "btn" class="waves-effect waves-light btn">Go</button>
+		</div>    	 
+    </div>
+    </section>
+    
+    
+
+	<section id ="row" class="row" style="display:none;">
+		
+		<div id="ajaxSpinner" style = "text-align: center;">
+	        <img alt="Loading" th:src="@{/assets/images/fs4.gif}" style="width:500px;  margin:auto;"/>
+	        <h5>Marking presence...</h5>
+	        <h5>It may take up to 2 minutes.</h5>
+	    </div>
+		
+		<div class="container">
+			<div id="calendar" style="max-width:900px; margin:auto;"></div>
+		</div>
+	</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+ <script th:inline="javascript">
+/*<![CDATA[*/
+           
+    $(document).ready(function(){
+ 
+ 		$.get("/hmacinfo",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+       
+   		
+   		
+	   		if(data == "HashedMacNotFound"){
+	   			$("#name").html(GetURLParameter('hashedmac'));
+	   			$("#savehash").slideDown("slow", function(){});
+	   			console.log("data");
+	   		}
+	   		else{
+	   			var json = JSON.parse(data);
+	   			var child = $("#name").children();
+	   			$("#name").html(json.name);
+	   			$("#name").prepend(child);
+	   			console.log(json.name);
+	   		}
+	   		//alert("Data: " + data + "\nStatus: " + status);
+	   	});
+ 		
+ 		
+ 		$("#savebtn").click(function(){
+ 			console.log("saving hash");
+ 			
+ 			
+ 			var text = GetURLParameter('hashedmac')+" \n\nYou can save your hashed MAC, so that you need not type it again.\nDon't worry! your hashed MAC is completely hidden from any prying eyes.\n\nPlease name your device.";
+ 		
+ 			
+ 			var name = prompt(text);
+ 		     
+ 		     if (name) {
+ 		    	$.get("/addhmac",{hashedmac : GetURLParameter('hashedmac'), name: name}, function(data, status){
+ 	 				window.location.reload();
+ 	 				alert("Added succesfully! " );
+ 	 			}); 
+ 		    	
+ 		     }
+ 		     else alert("Snap! You pressed Cancel or no value was entered!");
+ 			
+ 			/* $.get("/addhmac",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+ 				window.location.reload(); 
+ 			}); */
+ 		});
+ 		
+ 		
+ 		
+ 		
+ 		
+});
+    
+   
+    function getCalendarData( start, end, noOfHours, locationid){
+	   
+	   $.get("/admin/data/custom-attendance",
+			   { hashedmac: GetURLParameter('hashedmac'),
+		   		 start:start,
+		   		 end:end,
+		   		 
+		   		 locationid:locationid}, function(data, status){
+	        
+			   console.log(data);
+				var events =[];
+			   for( x in data.attendList){
+				   var minutes = Math.round(data.attendList[x].acadAreaMillis / (60000));
+				   var hours = (parseInt(minutes/60));
+				   if(hours>0){
+					   minutes = minutes % 60;
+				   }
+				   data.attendList[x].title = data.attendList[x].title +" for \n"+ (hours>0?hours+" hours ":"") + (minutes>0?minutes+" min ":"");
+			   		
+				   if(hours >= noOfHours){
+					   events.push(data.attendList[x]);
+				   }
+			   }
+			   console.log(data);
+			   
+			   
+			   $('#calendar').fullCalendar({
+					header: {
+						right: 'prev,next today',
+						center: 'title',
+						left: ''
+					},
+					events: events
+					
+				});
+				$('#calendar').fullCalendar( 'removeEvents');
+				//$('#calendar').fullCalendar( 'rerenderEvents' );
+				$('#calendar').fullCalendar( 'addEventSource', events );
+				//$('#calendar').fullCalendar( 'rerenderEvents' );
+		    	//alert("Data: " + data + "\nStatus: " + status);
+	    });
+	   
+   }
+    
+    $("#btn").click(function(){
+ 	   
+ 	   $("#row").slideDown("slow", function(){})
+ 	   
+ 	   var floor=0;
+ 	   //alert($("#building").val()+$("#building :selected").attr("data-floors") + " "+$("#people").val());
+ 	   
+ 	   getCalendarData($("#from").val(),$("#to").val(),$("#hours").val(),$("#location").val() );
+ 	   
+ 	   
+ 	   })
+   
+
+    $(document).ready(function() {
+    	
+    	$("#signout").click(function(){
+        	console.log('sign out.');
+        	  var auth2 = gapi.auth2.getAuthInstance();
+        	  auth2.signOut().then(function () {
+        	    console.log('User signed out.');
+        	   
+        	  });
+        	  window.location="/";
+        });
+    	$("#profile").click(function(){
+			console.log("jai mata di!"); 	
+	  
+			window.location ="/admin/profile?hashedmac="+GetURLParameter('hashedmac');
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+		});
+        $("#timeline").click(function(){
+       			console.log("jai mata di!"); 	
+       			window.location ="/admin/trackuser?hashedmac="+GetURLParameter('hashedmac');
+       			// $.get("/admin/trackuser",{ hashedmac: GetURLParameter('hashedmac')})
+        });
+        
+        $("#timeline_charts").click(function(){
+    			console.log("jai mata di!"); 	
+    			window.location ="/admin/trackuser/charts?hashedmac="+GetURLParameter('hashedmac');
+    			
+    	});
+        $("#time_spent").click(function(){
+    		console.log("jai mata di!"); 	
+    		window.location ="/admin/timespent?hashedmac="+GetURLParameter('hashedmac');
+    		
+    	});
+        
+        $("#home").click(function(){
+    			//console.log("jai mata di!"); 	
+    	  
+    			window.location ="/welcome";
+    			
+    			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+    	});
+    	
+    	
+    	$('select').material_select();
+    	
+    	
+    	
+    	
+  	});
+   /*]]>*/	
+</script>
+
+
+    
+
+    <footer class="primary-footer-joy container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+
+      
+    </footer>
+
+</body>
+</html>

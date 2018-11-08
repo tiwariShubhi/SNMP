@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+
+       <meta charset="utf-8"></meta>
+    <title>Presence | Track Yourself</title>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custommaterialize.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custom-chip.css}" />
+    
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custommain.css}"/>
+    
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.1.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/highcharts-more.js"></script>
+
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.3/fullcalendar.js"/>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.3/fullcalendar.css" rel="stylesheet"/>
+	
+     <script th:inline="javascript">
+/*<![CDATA[*/
+    
+    function GetURLParameter(sParam)
+    
+    {
+    
+        var sPageURL = window.location.search.substring(1);
+    
+        var sURLVariables = sPageURL.split('&');
+    
+        for (var i = 0; i < sURLVariables.length; i++)
+    
+        {
+    
+            var sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] == sParam)
+    
+            {
+    
+                return sParameterName[1];
+    
+            }
+    
+        }
+    
+    }
+    
+    
+   
+   $.ajaxSetup({
+	    beforeSend: function() {
+	        // TODO: show your spinner
+	        $('#ajaxSpinner').show();
+	    },
+	    complete: function() {
+	        // TODO: hide your spinner
+	        $('#ajaxSpinner').hide();
+	    }
+	});
+    
+    /*]]>*/	
+    </script>
+  </head>
+
+  <body class="joy">
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>Your <br/> Presence</a>
+      </h1>
+
+    <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+      <nav class="nav-joy primary-nav-joy">
+        <ul>
+        <li><a style="color:#648880;">Presence</a></li>
+        <li><a href="attendance_marker.html">Attendance</a></li>
+        <li><a id="home">Home</a></li>
+          <li><a id="signout">Sign Out</a></li>
+          
+             </ul>
+      </nav>
+	
+      
+    </header>
+
+    <!-- Lead -->
+
+    <section class="row-alt">
+      <div class="lead container">
+		
+           
+       <div class="chip" id="name">
+			<label for="filled-in-box1" style="height:17px;" ></label>
+       Tag</div>
+		
+			
+			<div id="savehash" style="display:none;">
+				<button id = "savebtn" type ="button" class="btn btn-default"  value="save" >Save Hash</button><br/>			
+ 				
+ 				</div>
+    
+        <p>Your presence at academic area, 10 AM - 10PM</p>
+
+      </div>
+    </section>
+
+    <!-- Main content -->
+    
+   
+      
+      <section class="row" style="padding-top:0px;">
+		<div class="container">
+			<div id="ajaxSpinner" style = "text-align: center;">
+        <img alt="Loading" th:src="@{/assets/images/fs4.gif}" style="width:500px; margin:auto;"/>
+        <h5>Calculating your presence...</h5>
+    	</div>
+    	
+			<div id="calendar" style="max-width:900px; margin:auto;"></div>
+		</div>
+	</section>
+    
+      
+      
+     
+ 
+		<!-- Scripts -->
+		
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+      <script th:inline="javascript">
+/*<![CDATA[*/
+           $(document).ready(function(){
+ 
+ 		$.get("/hmacinfo",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+       
+   		
+   		
+	   		if(data == "HashedMacNotFound"){
+	   			$("#name").html(GetURLParameter('hashedmac'));
+	   			$("#savehash").slideDown("slow", function(){});
+	   			console.log("data");
+	   		}
+	   		else{
+	   			var json = JSON.parse(data);
+	   			var child = $("#name").children();
+	   			$("#name").html(json.name);
+	   			$("#name").prepend(child);
+	   			console.log(json.name);
+	   		}
+	   		//alert("Data: " + data + "\nStatus: " + status);
+	   	});
+ 		
+ 		
+ 		$("#savebtn").click(function(){
+ 			console.log("saving hash");
+ 			
+ 			
+ 			var text = GetURLParameter('hashedmac')+" \n\nYou can save your hashed MAC.\nDon't worry! your hashed MAC is completely hidden from any prying eyes.\n\nPlease name your device.";
+ 		
+ 			
+ 			var name = prompt(text);
+ 		     
+ 		     if (name) {
+ 		    	$.get("/addhmac",{hashedmac : GetURLParameter('hashedmac'), name: name}, function(data, status){
+ 	 				window.location.reload();
+ 	 				alert("Added succesfully! " );
+ 	 			}); 
+ 		    	
+ 		     }
+ 		     else alert("Snap! You pressed Cancel or no value was entered!");
+ 			
+ 			/* $.get("/addhmac",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+ 				window.location.reload(); 
+ 			}); */
+ 		});
+ 		
+ 		/* Calendar */
+ 		getCalendarData();
+ 		
+ 		
+});
+
+   var jsonbaba;
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   function getCalendarData(){
+	   
+	   $.get("/data/attendance",{ hashedmac: GetURLParameter('hashedmac')}, function(data, status){
+	        
+		   console.log(data);
+			$('#calendar').fullCalendar({
+				header: {
+					right: 'prev,next today',
+					center: 'title',
+					left: ''
+				},
+				
+				events : data.attendList
+				
+				
+			});
+	    	
+	    	//alert("Data: " + data + "\nStatus: " + status);
+	    });
+	   
+   }
+   
+   $(document).ready(function(){
+    $("#signout").click(function(){
+    	console.log('sign out.');
+    	  var auth2 = gapi.auth2.getAuthInstance();
+    	  auth2.signOut().then(function () {
+    	    console.log('User signed out.');
+    	   
+    	  });
+    	  window.location="/";
+    });
+    $("#timeline").click(function(){
+   			console.log("jai mata di!"); 	
+   			window.location ="/admin/trackuser?hashedmac="+GetURLParameter('hashedmac');
+   			// $.get("/admin/trackuser",{ hashedmac: GetURLParameter('hashedmac')})
+    });
+    
+    $("#timeline_charts").click(function(){
+			console.log("jai mata di!"); 	
+			window.location ="/admin/trackuser/charts?hashedmac="+GetURLParameter('hashedmac');
+			
+	});
+    $("#time_spent").click(function(){
+		console.log("jai mata di!"); 	
+		window.location ="/admin/timespent?hashedmac="+GetURLParameter('hashedmac');
+		
+	});
+    $("#custom_attendance").click(function(){
+		console.log("jai mata di!"); 	
+		window.location ="/admin/custom-attendance?hashedmac="+GetURLParameter('hashedmac');
+		
+	});
+    
+    $("#home").click(function(){
+			//console.log("jai mata di!"); 	
+	  
+			window.location ="/welcome";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+
+    
+    $.get("/metric/entryacademic",{ hashedmac: GetURLParameter('hashedmac')}, function(data, status){
+        
+    	$("#entryacademic").text(data);
+    	
+    	//alert("Data: " + data + "\nStatus: " + status);
+    });
+    
+ $.get("/metric/avgentryacademic",{ hashedmac: GetURLParameter('hashedmac')}, function(data, status){
+        
+    	$("#avgentryacademic").text(data);
+    	
+    	//alert("Data: " + data + "\nStatus: " + status);
+    });
+ 
+ $.get("/metric/exitacademic",{ hashedmac: GetURLParameter('hashedmac')}, function(data, status){
+     
+ 	$("#exitacademic").text(data);
+ 	
+ 	//alert("Data: " + data + "\nStatus: " + status);
+ });
+ 
+ $.get("/metric/avgexitacademic",{ hashedmac: GetURLParameter('hashedmac')}, function(data, status){
+     
+ 	$("#avgexitacademic").text(data);
+ 	
+ 	//alert("Data: " + data + "\nStatus: " + status);
+ });
+ 
+ 
+});
+   
+  
+ 
+	
+   /*]]>*/	
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+    
+
+    <footer class="primary-footer-joy container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+
+      
+    </footer>
+ 
+  </body>
+</html>

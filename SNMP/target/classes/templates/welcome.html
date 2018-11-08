@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+       <meta charset="utf-8"></meta>
+    <title>Home | Track Yourself</title>
+     <link rel="stylesheet" th:href="@{/assets/stylesheets/custom_welcome_materialize.css}" />
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/main.css}"/>
+ 	<script  th:src="@{/assets/js/sha256.js}"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    function search(){
+    	
+        console.log(document.getElementById("searchbar").value);
+        var sb = document.getElementById("searchbar").value.toLowerCase();
+    	
+        //alert(/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/.test(sb));
+        if(/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/.test(sb)){
+        document.getElementById("searchbar").value=CryptoJS.SHA256(sb);
+    	var frm = document.getElementById("search");
+    	frm.setAttribute("action","admin/trackuser");
+    	//document.getElementById("sbtn").setAttribute("disabled","true");
+    	document.getElementById("sbtn").innerHTML = "Please Wait";
+    	
+        }
+        else{
+        	alert("Please input correct MAC address. Please conform to the regex \n"+ "/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/")
+        	document.getElementById("search").onsubmit = function() {
+        	    return false;
+        	}
+        	window.location = "/";
+            
+        }
+    }
+    
+    function mv_search(){
+    	
+    	var hmac1, hmac2;
+    	
+    	
+    	var chips = document.getElementById("mv_chips");
+    	var ch = chips.children;
+    	for(var i=0; i<ch.length; i++){
+    		var chip = ch[i];
+    		if(chip.getAttribute("selected")==="yes"){
+      		  if(typeof hmac1 == 'undefined')
+      		  	hmac1 = chip.getAttribute("title");
+      		  else
+      			hmac2 =  chip.getAttribute("title");
+      		  
+      	  }
+    	}
+    	window.location = "/admin/trackuser/multiview?hmac1="+hmac1+"&"+"hmac2="+hmac2;
+    	
+    }
+    /*]]>*/	
+    </script>
+  </head>
+
+  <body>
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>Track <br/> Yourself</a>
+      </h1>
+
+    	 <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+      <nav class="nav primary-nav">
+        <ul>
+       <li><a id="crowd_analysis">Crowd Analysis</a></li>
+       <li><a id="footfall">Footfall</a></li>
+       <li th:if="${userobj.admin}"><a  id="add_admin">Add Admin</a></li>
+       <li th:if="${userobj.admin}"><a id="add_super">Add Power User</a></li>
+       <li><a style="color:#648880;">Home</a></li>
+          <li><a id="signout">Sign Out</a></li>
+          
+             </ul>
+      </nav>
+
+    
+      </header>
+
+    <!-- Lead -->
+
+    <section id="singleview" class="row-alt">
+      <div class="lead container">
+		
+		
+        <h1>Hi, <script th:inline="javascript" type="text/javascript">
+    
+                  document.write(/*[[${user.getString("given_name")}]]*/)
+</script></h1>
+
+        <p>Enter your MAC Address to know your timeline at IIIT Delhi</p>
+		<form id="search"  action="/admin/trackuser" method="get">
+		<fieldset class="register-group">
+
+            
+              <input id = "searchbar"  type="text" name="hashedmac" placeholder="MAC Address like 00:F0:0F:FF:FF:FF" required = "true"></input>
+            
+		</fieldset>
+      	<button id = "sbtn" class="waves-effect waves-light btn-joy" type="submit"  value="Track" onclick="search()">Track</button>
+      </form>
+      
+      <div id = "chips" style = "display:none;">
+     
+      <p id = "chipdata">OR<br/>You can use previously saved hash MACs</p></div>
+      
+      </div>
+    </section> 
+    
+    
+    
+     <section id ="multiview" class="row-alt" style="display:none;">
+            <div class="lead container">
+		
+        <h1>Multi Device Timeline</h1>
+        <p>Select two devices from your previously saved hash MACs <br/>to view your combined timeline</p>
+		
+		
+      
+      <div id = "mv_chips" style = "display:none; padding-bottom:20px;">
+     
+      </div>
+      
+       <button disabled="disabled" id = "mv_sbtn" class="waves-effect waves-light btn-joy"   value="Track" onclick="mv_search()">Track</button>
+     
+      
+      </div>
+    </section>
+    
+    <div style="text-align:center">
+	<a id = "mv_btn" data-tooltip="Click here to view combined timeline of upto two devices" class="waves-effect waves-light btn-joy tooltipped"   value="MultiView" onclick="clickMultiView()" 
+	style="background-color:#3E6D69; color:#fff; border-radius: 25% / 100%;    border-top-left-radius: 0;    border-top-right-radius: 0;">
+	<i class="material-icons left">group</i>Multi Device Timeline</a>
+	</div>
+	<div style="text-align:center;">
+     <a id = "sv_btn" class="waves-effect waves-light btn-joy"   value="SingleView" onclick="clickSingleView()" 
+     style="background-color:#3E6D69; color:#fff; display:none; border-radius: 25% / 100%; border-top-left-radius: 0;border-top-right-radius: 0;">
+	<i class="material-icons left">person</i>Single Device Timeline</a>
+		</div>
+
+    <!-- Main content -->
+
+   <!--  <section class="row">
+      <div class="container">
+
+      
+        
+      </div>
+    </section>
+-->
+   <script th:inline="javascript">
+/*<![CDATA[*/
+           
+   var count =0;
+ 
+           
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   
+   function GetURLParameter(sParam)
+   
+   {
+   
+       var sPageURL = window.location.search.substring(1);
+   
+       var sURLVariables = sPageURL.split('&');
+   
+       for (var i = 0; i < sURLVariables.length; i++)
+   
+       {
+   
+           var sParameterName = sURLVariables[i].split('=');
+   
+           if (sParameterName[0] == sParam)
+   
+           {
+   
+               return sParameterName[1];
+   
+           }
+   
+       }
+   
+   }
+   
+   
+   
+   function displayChips(){
+	   
+	   $.get("/gethmac",{ 	}, function(data, status){
+       
+		console.log(data);
+    	//$("#chipdata").text(data);
+    	if(data != "NoSavedHashedMacs"){
+    	var chips = document.getElementById("chips");
+    	
+    	var json = jQuery.parseJSON(data);
+    	for (var i in json){
+    		var chipdiv = document.createElement("div");
+    	    chipdiv.setAttribute("class","chip");
+    	    chipdiv.setAttribute("name",json[i].name);
+    	    chipdiv.innerHTML = json[i].name;
+    	    chipdiv.setAttribute("title",json[i].hmac);
+    	   	chipdiv.setAttribute("joy","joy");
+    	   	console.log(chipdiv.getAttribute("joy"));
+    	    console.log(json[i].name);
+    	    chips.appendChild(chipdiv);
+    	    var icon = document.createElement("i");
+    	    icon.setAttribute("class","material-icons");
+    	    icon.setAttribute("title","Delete");
+    	    icon.innerHTML = "close";
+    		chipdiv.appendChild(icon);
+    		$(chipdiv).click(function(){
+    			window.location.href = "/admin/trackuser?hashedmac="+$(this).attr("title");
+    			
+    		});
+    		$(icon).click(function(e){ 
+    			var x=window.confirm("Are you sure you want to delete "+ $(this).parent().attr("name")+"?");
+    			if (x){
+    				
+    				$.get("/deletehmac",{hashedmac:  $(this).parent().attr("title")	}, function(data, status){
+        			});
+        			 $(this).parent().remove();
+        			     e.stopPropagation();
+        			     
+    			    window.alert("Hashed MAC deleted!");
+    			}
+    			else
+    				e.stopPropagation();			 
+    		});
+    		
+    		
+    	}
+    	$( "#chips" ).slideDown( "slow", function() {
+    	    // Animation complete.
+    	  });
+    	}
+    	
+    	//alert("Data: " + data + "\nStatus: " + status);
+    });
+   }
+   
+function displayMVChips(){
+	   
+	   $.get("/gethmac",{ 	}, function(data, status){
+       
+		console.log(data);
+    	//$("#chipdata").text(data);
+    	if(data != "NoSavedHashedMacs"){
+    	var chips = document.getElementById("mv_chips");
+    	
+    	var json = jQuery.parseJSON(data);
+    	for (var i in json){
+    		var chipdiv = document.createElement("div");
+    	    chipdiv.setAttribute("class","chip");
+    	    chipdiv.setAttribute("name",json[i].name);
+    	    chipdiv.innerHTML = json[i].name;
+    	    chipdiv.setAttribute("title",json[i].hmac);
+    	    chipdiv.setAttribute("selected","no");
+    	    console.log(json[i].name);
+    	    chips.appendChild(chipdiv);
+    	   
+    		$(chipdiv).click(function(){
+    			console.log(this.getAttribute("selected"));
+    			console.log(count);
+    			
+    			if(this.getAttribute("selected")==="no"){
+    				$(this).css("background-color","#1a7168");
+    				this.setAttribute("selected","yes");
+    				count=count+1;
+    				
+    			}
+    			else{
+    				$(this).css("background-color","#293F50");
+    				this.setAttribute("selected","no");
+    				count=count-1;
+    			}
+    			
+    			if(count==2){
+    				document.getElementById("mv_sbtn").disabled = false;
+    			}
+    			else{
+    				document.getElementById("mv_sbtn").disabled = true;
+    			}
+    			
+    			if(count>2){
+    				alert("You can only select two devices!");
+    				$(this).trigger("click");
+    			}
+    		});
+    		
+    		
+    	}
+    	$( "#mv_chips" ).slideDown( "slow", function() {
+    	    // Animation complete.
+    	  });
+    	}
+    	
+    	//alert("Data: " + data + "\nStatus: " + status);
+    });
+   }
+   
+   function clickMultiView(){
+	   $("#singleview").slideUp("fast",function(){
+		  
+		   $("#sv_btn").slideDown("fast",function(){});
+		   $("#multiview").slideDown("slow",function(){});
+		   $("#mv_btn").slideUp("fast",function(){});
+		   
+		   
+	   });
+   }
+   
+   function clickSingleView(){
+	   $("#multiview").slideUp("fast",function(){
+		  
+		   $("#mv_btn").slideDown("fast",function(){});
+		   $("#singleview").slideDown("slow",function(){});
+		   $("#sv_btn").slideUp("fast",function(){});
+		   
+	   });
+   }
+   
+   $(document).ready(function(){
+    $("#signout").click(function(){
+    	console.log('sign out.');
+    	  var auth2 = gapi.auth2.getAuthInstance();
+    	  auth2.signOut().then(function () {
+    	    console.log('User signed out.');
+    	   
+    	  });
+    	  window.location="/";
+    });
+    $("#crowd_analysis").click(function(){
+   			console.log("jai mata di!"); 	
+    	  window.location = "/admin/crowd";
+    });
+    $("#footfall").click(function(){
+		//console.log("jai mata di!"); 	
+  
+		window.location ="/admin/footfall";
+		
+		//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+});
+    $("#add_admin").click(function(){
+		console.log("jai mata di!"); 	
+  
+		window.location ="/admin/addadmin";
+		
+		//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+});
+    $("#add_super").click(function(){
+		console.log("jai mata di!"); 	
+  
+		window.location ="/admin/addsuper";
+		
+		//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+});
+    
+    displayChips();
+    displayMVChips();
+});
+   /*]]>*/	
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+		
+		
+		<footer class="primary-footer container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+	
+      <!-- <nav class="nav">
+        <ul>
+          <li><a href="/signout">Sign Out</a></li>
+         </ul>
+      </nav> -->
+
+    </footer>
+ 
+  </body>
+</html>

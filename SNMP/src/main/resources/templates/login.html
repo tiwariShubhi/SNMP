@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta name="google-signin-client_id"
+	content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com" />
+<!-- plug in your generated key -->
+<script src="https://apis.google.com/js/platform.js"></script>
+
+<script type="text/javascript">
+	function onSignIn(googleUser) {
+		var profile = googleUser.getBasicProfile();
+		var id_token = googleUser.getAuthResponse().id_token;
+		//console.log('ID Token: ' + id_token);
+		//console.log('ID: ' + profile.getId());
+		console.log('Name: ' + profile.getName());
+		console.log('Given Name: ' + profile.getGivenName());
+		console.log('Image URL: ' + profile.getImageUrl());
+		console.log('Email: ' + profile.getEmail());
+ 
+		var form = document.createElement("form");
+		form.setAttribute("method", "post");
+		form.setAttribute("action", "/welcome");
+		// form.setAttribute("enctype","multipart/form-data");
+		var params = {
+			"id_token" : id_token,
+			"name" : profile.getName(),
+			"emailID" : profile.getEmail()
+		};
+		for ( var key in params) {
+			if (params.hasOwnProperty(key)) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", key);
+				hiddenField.setAttribute("value", params[key]);
+
+				form.appendChild(hiddenField);
+			}
+		}
+
+		document.body.appendChild(form);
+		form.submit();
+
+		//window.location = "/welcome;
+
+		//window.location = "/professor/login/" + profile.getId() + "/" + profile.getEmail() + "/" + profile.getName();
+	}
+	function onFailure(error) {
+		console.log(error);
+	}
+	function renderButton() {
+		gapi.signin2.render('my-signin2', {
+			'scope' : 'https://www.googleapis.com/auth/plus.login',
+			'width' : 250,
+			'height' : 50,
+
+			'longtitle' : true,
+			'theme' : 'dark',
+			'onsuccess' : onSuccess,
+			'onfailure' : onFailure
+		});
+
+	}
+</script>
+
+<meta charset="utf-8"></meta>
+<title>Login | Track Yourself</title>
+<link rel="stylesheet" th:href="@{/assets/stylesheets/main.css}" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="http://fonts.googleapis.com/css?family=Lato:100,300,400" />
+
+</head>
+
+<body>
+
+	<!-- Header -->
+
+	<header class="primary-header container group">
+
+		<h1 class="logo">
+			<a>Track <br /> Yourself
+			</a>
+		</h1>
+
+		<h3 class="tagline">IIIT Delhi</h3>
+
+
+	</header>
+
+	<!-- Lead -->
+
+	<section class="row-alt">
+		<div class="lead container">
+
+	<img src="assets/images/home/iiitd.png" alt="IIIT Delhi"/>
+			<h1>Track Yourself</h1>
+
+			<p>
+				It is a tool to track your location at IIIT Delhi using mobile phone's
+				MAC address<br /> &amp; some more cool stuff
+			</p>
+			<div class="logoutbutton" align="center">
+				<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+			</div>
+
+
+
+		</div>
+	</section>
+
+	<!-- Main content -->
+
+
+
+
+
+
+
+	<footer class="primary-footer container group">
+
+		<small>&copy; IIIT Delhi | Joy Aneja</small>
+
+
+	</footer>
+
+
+
+
+</body>
+</html>

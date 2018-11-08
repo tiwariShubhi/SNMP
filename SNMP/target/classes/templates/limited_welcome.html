@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+       <meta charset="utf-8"></meta>
+    <title>Home | Track Yourself</title>
+     <link rel="stylesheet" th:href="@{/assets/stylesheets/custom_welcome_materialize.css}" />
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/main.css}"/>
+ 	<script  th:src="@{/assets/js/sha256.js}"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    function search(){
+    	
+        console.log(document.getElementById("searchbar").value);
+        var sb = document.getElementById("searchbar").value.toLowerCase();
+    	
+        //alert(/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/.test(sb));
+        if(/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/.test(sb)){
+        document.getElementById("searchbar").value=CryptoJS.SHA256(sb);
+    	var frm = document.getElementById("search");
+    	frm.setAttribute("action","calendar");
+    	//document.getElementById("sbtn").setAttribute("disabled","true");
+    	document.getElementById("sbtn").innerHTML = "Please Wait";
+    	
+        }
+        else{
+        	alert("Please input correct MAC address. Please conform to the regex \n"+ "/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/")
+        	document.getElementById("search").onsubmit = function() {
+        	    return false;
+        	}
+        	window.location = "/";
+            
+        }
+    }
+    
+    
+    /*]]>*/	
+    </script>
+  </head>
+
+  <body>
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>Track <br/> Yourself</a>
+      </h1>
+
+    	 <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+      <nav class="nav primary-nav">
+        <ul>
+       
+       <li><a th:href="@{attendance_marker}">Attendance</a></li>
+       <li><a style="color:#648880;">Home</a></li>
+          <li><a id="signout">Sign Out</a></li>
+          
+             </ul>
+      </nav>
+
+    
+      </header>
+
+    <!-- Lead -->
+
+    <section id="singleview" class="row-alt">
+      <div class="lead container">
+		
+		
+        <h1>Hi, <script th:inline="javascript" type="text/javascript">
+    
+                  document.write(/*[[${user.getString("given_name")}]]*/)
+</script></h1>
+
+        <p>Enter MAC Address to know your presence at Academic area, IIIT Delhi</p>
+		<form id="search"  action="/calendar" method="get">
+		<fieldset class="register-group">
+
+            
+              <input id = "searchbar"  type="text" name="hashedmac" placeholder="MAC Address like 00:F0:0F:FF:FF:FF" required = "true"></input>
+            
+		</fieldset>
+      	<button id = "sbtn" class="waves-effect waves-light btn-joy" type="submit"  value="Track" onclick="search()">Track</button>
+      </form>
+      
+      <div id = "chips" style = "display:none;">
+     
+      <p id = "chipdata">OR<br/>You can use previously saved hash MACs</p></div>
+      
+      </div>
+    </section> 
+    
+    
+    <!-- Main content -->
+
+   <!--  <section class="row">
+      <div class="container">
+
+      
+        
+      </div>
+    </section>
+-->
+   <script th:inline="javascript">
+/*<![CDATA[*/
+           
+   var count =0;
+ 
+           
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   
+   function GetURLParameter(sParam)
+   
+   {
+   
+       var sPageURL = window.location.search.substring(1);
+   
+       var sURLVariables = sPageURL.split('&');
+   
+       for (var i = 0; i < sURLVariables.length; i++)
+   
+       {
+   
+           var sParameterName = sURLVariables[i].split('=');
+   
+           if (sParameterName[0] == sParam)
+   
+           {
+   
+               return sParameterName[1];
+   
+           }
+   
+       }
+   
+   }
+   
+   
+   
+   function displayChips(){
+	   
+	   $.get("/gethmac",{ 	}, function(data, status){
+       
+		console.log(data);
+    	//$("#chipdata").text(data);
+    	if(data != "NoSavedHashedMacs"){
+    	var chips = document.getElementById("chips");
+    	
+    	var json = jQuery.parseJSON(data);
+    	for (var i in json){
+    		var chipdiv = document.createElement("div");
+    	    chipdiv.setAttribute("class","chip");
+    	    chipdiv.setAttribute("name",json[i].name);
+    	    chipdiv.innerHTML = json[i].name;
+    	    chipdiv.setAttribute("title",json[i].hmac);
+    	   	chipdiv.setAttribute("joy","joy");
+    	   	console.log(chipdiv.getAttribute("joy"));
+    	    console.log(json[i].name);
+    	    chips.appendChild(chipdiv);
+    	    var icon = document.createElement("i");
+    	    icon.setAttribute("class","material-icons");
+    	    icon.setAttribute("title","Delete");
+    	    icon.innerHTML = "close";
+    		chipdiv.appendChild(icon);
+    		$(chipdiv).click(function(){
+    			window.location.href = "/calendar?hashedmac="+$(this).attr("title");
+    			
+    		});
+    		$(icon).click(function(e){ 
+    			var x=window.confirm("Are you sure you want to delete "+ $(this).parent().attr("name")+"?");
+    			if (x){
+    				
+    				$.get("/deletehmac",{hashedmac:  $(this).parent().attr("title")	}, function(data, status){
+        			});
+        			 $(this).parent().remove();
+        			     e.stopPropagation();
+        			     
+    			    window.alert("Hashed MAC deleted!");
+    			}
+    			else
+    				e.stopPropagation();			 
+    		});
+    		
+    		
+    	}
+    	$( "#chips" ).slideDown( "slow", function() {
+    	    // Animation complete.
+    	  });
+    	}
+    	
+    	//alert("Data: " + data + "\nStatus: " + status);
+    });
+   }
+   
+
+   
+   $(document).ready(function(){
+    $("#signout").click(function(){
+    	console.log('sign out.');
+    	  var auth2 = gapi.auth2.getAuthInstance();
+    	  auth2.signOut().then(function () {
+    	    console.log('User signed out.');
+    	   
+    	  });
+    	  window.location="/";
+    });
+  
+    displayChips();
+ 
+});
+   /*]]>*/	
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+		
+		
+		<footer class="primary-footer container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+	
+      <!-- <nav class="nav">
+        <ul>
+          <li><a href="/signout">Sign Out</a></li>
+         </ul>
+      </nav> -->
+
+    </footer>
+ 
+  </body>
+</html>

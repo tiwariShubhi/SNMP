@@ -1,0 +1,37 @@
+
+.chip {
+  display: inline-block;
+  height: 32px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #f5f5f5;/* rgba(0, 0, 0, 0.6); */
+  line-height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  background-color: #293F50; /* #e4e4e4; */
+  margin-right: 15px;
+  margin-left: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.chip:hover {
+	background-color: #1a7168;
+	
+}
+.chip img {
+  float: left;
+  margin: 0 8px 0 -12px;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
+.chip i.material-icons {
+  cursor: pointer;
+  float: right;
+  font-size: 16px;
+  line-height: 32px;
+  padding-left: 8px;
+}

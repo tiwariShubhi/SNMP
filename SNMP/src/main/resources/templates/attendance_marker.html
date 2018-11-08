@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+
+       
+    <title>Home | Track Yourself hioashjasb</title>
+    
+    
+  </head>
+  <body style='color:black'>
+  <div>
+  	<form id="search"  action="/upload" method="post" enctype="multipart/form-data">
+  		<div>
+  			Select excel sheet to upload : 	<input type="file" name="mac" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+			<br></br><br></br>
+  		</div>
+  		<div>
+  			Select location : <select multiple='multiple' name='location'> 
+									<option value='val1'>val1</option>
+									<option value='val2'>val2</option>
+									<option value='val3'>val3</option>
+							</select>
+		<br></br><br></br>
+  		</div>
+  			
+  		<div>
+  			From Date : <input type="date" name="fromDate"/>   To Date : <input type="date" name="toDate"/><br></br><br></br>
+  			
+  		</div>
+  		
+  		<div>
+  			From Time : <input type="time" name="fromTime"/>  To Time : <input type="time" name="toTime"/><br></br><br></br>
+  		</div>
+  		
+  		<div>
+  			Duration(in hours) : <input type="text" name="duration"/><br></br><br></br>
+  		</div>
+  		
+  		<div>
+  			<button id = "sbtn" class="waves-effect waves-light btn-joy" type="submit"  value="Track" onclick="search()">Track</button>
+  		</div>
+  	</form>
+  </div>
+	
+		
+		
+				
+		 
+		
+      	
+      
+	
+  </body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+
+       <meta charset="utf-8"></meta>
+    <title>Footfall | Track Yourself</title>
+    
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/custommaterialize.css}" />
+
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custommain.css}" />
+<link rel="stylesheet"
+	href="http://fonts.googleapis.com/css?family=Lato:100,300,400" />
+
+ 
+<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+     <script th:inline="javascript">
+/*<![CDATA[*/
+    
+    function GetURLParameter(sParam)
+    
+    {
+    
+        var sPageURL = window.location.search.substring(1);
+    
+        var sURLVariables = sPageURL.split('&');
+    
+        for (var i = 0; i < sURLVariables.length; i++)
+    
+        {
+    
+            var sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] == sParam)
+    
+            {
+    
+                return sParameterName[1];
+    
+            }
+    
+        }
+    
+    }
+    
+   
+    /*]]>*/	
+    </script>
+  </head>
+
+  <body class="joy">
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>IIITD <br/> Footfall</a>
+      </h1>
+
+    <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+   
+      <nav class="nav-joy primary-nav-joy">
+        <ul>
+        
+        <li><a id="crowd_analysis">Crowd Analysis</a></li>
+        <li><a style="color:#648880;" id="footfall">Footfall</a></li>
+        <li th:if="${userobj.admin}"><a id="add_admin">Add Admin</a></li>
+        <li th:if="${userobj.admin}"><a id="add_super">Add Power User</a></li>
+        <li><a id="home">Home</a></li>
+        
+          <li><a id="signout">Sign Out</a></li>
+          
+             </ul>
+      </nav>
+	
+      
+    </header>
+
+    <!-- Lead -->
+
+    <section class="row-alt">
+      <div class="lead container">
+		
+          
+        <h1></h1>
+
+        <p>Footfall of Library Building and Academic Building for a <br/> duration</p>
+        
+     
+    <div id="datebar">
+      			 from 
+      			 <input type="date"  class="datepicker" id = "from" style="margin:0 15px 0 15px; width:inherit;"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;until
+				<input type="date"  class ="datepicker" id="to" style="margin:0 15px 0 15px; width:inherit;"/>
+				<button id = "btn" type ="button" class="btn btn-default"  value="Go" >Go</button>
+				 </div>
+   
+  
+        
+        
+			
+			
+      			
+		
+        
+
+      </div>
+    </section>
+
+    <!-- Main content -->
+    
+   <section class="row">
+      <div class="container">
+
+        <!-- Workshops -->
+	 <div id="ajaxSpinner" style = "text-align: center; display:none;">
+        <img alt="Loading" th:src="@{/assets/images/fs4.gif}" style="width:500px;  margin:auto;"/>
+        <h5>Counting feet ...</h5>
+    	</div>	
+      <div id ="charts" style="display:none;">          
+                <h1 id ="timespent" style="text-align: center;">
+	
+	Library Building
+	</h1>
+    <div id="donutchart" style="width: 900px; height: 500px; margin:auto;"></div>
+
+     
+      
+      
+      
+       <h1 id ="timespent" style="text-align: center;">
+	
+	Academic Building
+	</h1>
+    <div id="donutchart2" style="width: 900px; height: 500px; margin:auto;"></div>
+	</div>
+      </div>
+      
+    </section>
+	
+	
+		<!-- Scripts -->
+		<script src="//code.jquery.com/jquery-2.1.1.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+      <script th:inline="javascript">
+/*<![CDATA[*/
+           
+           
+            $.ajaxSetup({
+	    beforeSend: function() {
+	        // TODO: show your spinner
+	        //$('#ajaxSpinner').show();
+	    },
+	    complete: function() {
+	        // TODO: hide your spinner
+	        $('#ajaxSpinner').fadeOut();
+	        $('#charts').show();
+	    }
+	});
+    
+    
+           
+   var jsonbaba;
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   
+   
+   $(document).ready(function(){
+	   $("#signout").click(function(){
+	    	console.log('sign out.');
+	    	  var auth2 = gapi.auth2.getAuthInstance();
+	    	  auth2.signOut().then(function () {
+	    	    console.log('User signed out.');
+	    	   
+	    	  });
+	    	  window.location="/";
+	    });
+	    $("#crowd_analysis").click(function(){
+	   			console.log("jai mata di!"); 	
+	    	  window.location = "/admin/crowd";
+	    });
+	    $("#add_admin").click(function(){
+			console.log("jai mata di!"); 	
+	  
+			window.location ="/admin/addadmin";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+		});
+	    $("#add_super").click(function(){
+			console.log("jai mata di!"); 	
+	  
+			window.location ="/admin/addsuper";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+		});
+	    $("#home").click(function(){
+			//console.log("jai mata di!"); 	
+	  
+			window.location ="/welcome";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+    
+    
+    $( "#to" ).prop( "disabled", true );
+	   $( "#btn" ).prop( "disabled", true );
+   
+	   google.charts.load("current", {packages:["corechart"]});
+	    google.charts.setOnLoadCallback();
+	    
+	     
+	   
+});
+   
+   
+   function drawChart() {
+	      var data = google.visualization.arrayToDataTable([
+	        ['Location', 'Footfall'],
+	        ['Library 0 Floor',     jsonbaba.libraryBuilding[0] ],
+	        ['Library 1 Floor',      jsonbaba.libraryBuilding[1]],
+	        ['Library 2 Floor',  jsonbaba.libraryBuilding[2]],
+	        ['Library 3 Floor', jsonbaba.libraryBuilding[3]]
+	        
+	      ]);
+
+	      var options = {
+	        title: '',
+	        width: 900,
+	        height:500
+	      };
+
+	      var chart = new google.visualization.ColumnChart(document.getElementById('donutchart'));
+	      chart.draw(data, options);
+	      
+	      
+	      
+	      
+	      
+	      var data2 = google.visualization.arrayToDataTable([
+	        ['Location', 'Footfall'],
+	        ['Academic 0 Floor',     jsonbaba.academicBuilding[0] ],
+	        ['Academic 1 Floor',      jsonbaba.academicBuilding[1]],
+	        ['Academic 2 Floor',  jsonbaba.academicBuilding[2]],
+	        ['Academic 3 Floor', jsonbaba.academicBuilding[3]],
+	        ['Academic 4 Floor', jsonbaba.academicBuilding[4]],
+	        ['Academic 5 Floor', jsonbaba.academicBuilding[5]]
+	        
+	      ]);
+
+	      var options2 = {
+	        title: '',
+	        width: 900,
+	        height:500
+	      };
+
+	      var chart2 = new google.visualization.ColumnChart(document.getElementById('donutchart2'));
+	      chart2.draw(data2, options2);
+	      
+	      
+	    }
+	    
+   
+   function getData(from, to){
+	    $.get("/footfall/data",{ from: from, to: to }, function(data, status){
+	        
+	    	
+	    	jsonbaba = JSON.parse(data);
+	    	
+	     	$("#data").text(data);
+	     	
+	     	console.log(jsonbaba);
+		 	
+			drawChart();
+	     	//alert("Data: " + data + "\nStatus: " + status);
+	     });
+	    }
+
+   
+
+   
+$("#btn").click(function(){
+   	console.log("jai mata di!"); 	
+   	$('#ajaxSpinner').show();
+   	var $inputfrom = $('#from').pickadate();
+   		var pickerfrom = $inputfrom.pickadate('picker');
+   	  	
+   	 	var $inputto = $('#to').pickadate();
+   	var pickerto = $inputto.pickadate('picker');
+   	getData(pickerfrom.get('highlight').obj.getTime(), pickerto.get('highlight').obj.getTime());
+   	
+   	
+   	 
+   });   
+   
+$('#from').pickadate({
+	    selectMonths: true, // Creates a dropdown to control month
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    min: new Date(2015,11,1),
+		max: true,
+		onSet:function(){
+			$( "#to" ).prop( "disabled", false );
+		 var $inputfrom = $('#from').pickadate();
+		var pickerfrom = $inputfrom.pickadate('picker');
+	  	
+	 var $inputto = $('#to').pickadate();
+		var pickerto = $inputto.pickadate('picker');
+	  	
+		pickerto.set('min',pickerfrom.get('highlight').obj);
+		}
+	    
+	  });
+	
+$('#to').pickadate({
+	    selectMonths: true, // Creates a dropdown to control month
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    min: new Date(2015,11,1),
+		max: true,
+		onClose: function() {
+ 	        $(document.activeElement).blur();
+ 	    },
+		onSet: function(){
+			$( "#btn" ).prop( "disabled", false );
+		}
+	    
+	  });
+   
+var $inputfrom = $('#from').pickadate();
+var pickerfrom = $inputfrom.pickadate('picker');
+
+var $inputto = $('#to').pickadate();
+var pickerto = $inputto.pickadate('picker');
+var date = new Date();
+
+pickerto.set('select', date);
+date.setDate(date.getDate()-1);
+pickerfrom.set('select', date);
+
+
+//$("#btn").trigger('click');
+
+
+
+
+   
+  /*  var $loading = $('#loadingDiv').hide();
+   $(document)
+     .ajaxStart(function () {
+       $loading.show();
+     })
+     .ajaxStop(function () {
+       $loading.hide();
+     }); */
+   /*]]>*/	
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+    
+
+    <footer class="primary-footer-joy container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+
+      
+    </footer>
+ 
+  </body>
+</html>

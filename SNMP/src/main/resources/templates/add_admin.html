@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+ 
+<meta name="google-signin-client_id" content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com"/> <!-- plug in your generated key -->
+       <meta charset="utf-8"></meta>
+    <title>Add Admin | Track Yourself</title>
+     <link rel="stylesheet" th:href="@{/assets/stylesheets/custom_welcome_materialize.css}" />
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/main.css}"/>
+ 	<script  th:src="@{/assets/js/sha256.js}"></script>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    function search(){
+    	
+        //console.log(document.getElementById("searchbar").value);
+        var sb = document.getElementById("searchbar").value.toLowerCase();
+    	
+        //alert(/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/.test(sb));
+        if(/^([_0-9a-z-]+)@iiitd.ac.in$/.test(sb)){
+        
+        	console.log(sb);
+        	
+        	$.get("/admin/addbyemail",{email : sb}, function(data, status){
+ 				
+ 				if(data !== "null")alert("Added succesfully! " );
+ 				else alert("Snap! Internal error occurred!" );
+ 			}); 
+        	
+    	//var frm = document.getElementById("search");
+    	//frm.setAttribute("action","attendance");
+    	//document.getElementById("sbtn").setAttribute("disabled","true");
+    	//document.getElementById("sbtn").innerHTML = "Please Wait";
+    	
+        }
+        else{
+        	alert("Please input correct email address. Please conform to this regex \n"+ "/^([_0-9a-z-]+)@iiitd.ac.in$/")
+        	document.getElementById("search").onsubmit = function() {
+        	    return false;
+        	}
+        	window.location = "/";
+            
+        }
+    }
+    
+   
+    /*]]>*/	
+    </script>
+  </head>
+
+  <body>
+
+    <!-- Header -->
+
+    <header class="primary-header container group">
+
+      <h1 class="logo">
+      <a>Add <br/> Admin</a>
+      </h1>
+
+    	 <h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+      <nav class="nav primary-nav">
+        <ul>
+       
+       <li><a id="crowd_analysis">Crowd Analysis</a></li>
+        <li><a id="footfall">Footfall</a></li>
+        <li><a style="color:#648880;" id="add_admin">Add Admin</a></li>
+        <li><a id="add_super">Add Power User</a></li>
+        <li><a id="home">Home</a></li>
+        
+          <li><a id="signout">Sign Out</a></li>
+           
+             </ul>
+      </nav>
+
+    
+      </header>
+
+    <!-- Lead -->
+
+    <section id="singleview" class="row-alt">
+      <div class="lead container">
+		
+		
+        
+        <p>Enter email address to add him as an admin<br/> He'll get access to Crowd Analysis, Footfall data, 
+        Timeline, Timeline Charts, Time Spent data &amp; Custom Presence</p>
+ 
+		
+		<fieldset class="register-group">
+
+            
+              <input id = "searchbar"  type="text" name="email" placeholder="IIIT Delhi email address like joy1410@iiitd.ac.in" required = "true"></input>
+            
+		</fieldset>
+      	<button id = "sbtn" class="waves-effect waves-light btn-joy"  value="Track" onclick="search()">Add as admin</button>
+      
+      
+      </div>
+    </section> 
+    
+    
+    <!-- Main content -->
+
+   <!--  <section class="row">
+      <div class="container">
+
+      
+        
+      </div>
+    </section>
+-->
+   <script th:inline="javascript">
+/*<![CDATA[*/
+           
+   var count =0;
+ 
+           
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   
+   $(document).ready(function(){
+	    $("#signout").click(function(){
+	    	console.log('sign out.');
+	    	  var auth2 = gapi.auth2.getAuthInstance();
+	    	  auth2.signOut().then(function () {
+	    	    console.log('User signed out.');
+	    	   
+	    	  });
+	    	  window.location="/";
+	    });
+	    $("#crowd_analysis").click(function(){
+	   			console.log("jai mata di!"); 	
+	    	  window.location = "/admin/crowd";
+	    });
+	    $("#footfall").click(function(){
+			//console.log("jai mata di!"); 	
+	  
+			window.location ="/admin/footfall";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+	    $("#add_admin").click(function(){
+			console.log("jai mata di!"); 	
+	  
+			window.location ="/admin/addadmin";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+	    $("#add_super").click(function(){
+			console.log("jai mata di!"); 	
+	  
+			window.location ="/admin/addsuper";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+	    $("#home").click(function(){
+			//console.log("jai mata di!"); 	
+	  
+			window.location ="/welcome";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+	  
+	});
+   /*]]>*/	
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+		
+		
+		<footer class="primary-footer container group">
+	
+      <small>&copy; IIIT Delhi | Joy Aneja</small>
+	
+      <!-- <nav class="nav">
+        <ul>
+          <li><a href="/signout">Sign Out</a></li>
+         </ul>
+      </nav> -->
+
+    </footer>
+ 
+  </body>
+</html>

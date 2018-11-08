@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/spring-boot-1.3.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ishub/Downloads/Compressed/poi-bin-4.0.0-20180907/poi-4.0.0/poi-4.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ishub/Downloads/Compressed/poi-bin-4.0.0-20180907/poi-4.0.0/poi-ooxml-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/commons-compress-1.18.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/poi-examples-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/poi-excelant-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/poi-ooxml-schemas-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/poi-scratchpad-4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/xmlbeans-3.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/m.tech/Sem 3/IP/commons-collections4-4.2.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

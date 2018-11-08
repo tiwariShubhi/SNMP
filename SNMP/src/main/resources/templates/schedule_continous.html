@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta name="google-signin-client_id"
+	content="97033074736-gurbgba31eqkq2bps6qp4oc17131j54h.apps.googleusercontent.com" />
+<!-- plug in your generated key -->
+ 
+  <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"/>
+ -->
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+ <link rel="stylesheet" th:href="@{/assets/stylesheets/custommaterialize.css}" />
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custom-chip.css}" />
+<link rel="stylesheet" th:href="@{/assets/stylesheets/custommain.css}" />
+<link rel="stylesheet"
+	href="http://fonts.googleapis.com/css?family=Lato:100,300,400" />
+
+ 
+<script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+ 
+  <script th:inline="javascript">
+/*<![CDATA[*/
+    
+    function GetURLParameter(sParam)
+    
+    {
+    
+        var sPageURL = window.location.search.substring(1);
+    
+        var sURLVariables = sPageURL.split('&');
+    
+        for (var i = 0; i < sURLVariables.length; i++)
+    
+        {
+    
+            var sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] == sParam)
+    
+            {
+    
+                return sParameterName[1];
+    
+            }
+    
+        }
+    
+    }
+    
+    /*]]>*/	
+    </script>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+             
+      function removeDup(logs){
+	  
+	  var i;
+	  for(i=0;i< logs.length -1 ;i++){
+		  console.log(i);
+	  }
+	  return logs;
+  }       
+      
+	  function produceMessage(msg){
+	  /* not supported in IE - startswith() :|  */  
+	  var out;
+	  var num=-1;
+	  if(msg.startsWith("BH")){
+		  out = "Boys Hostel";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  
+	  else if(msg.startsWith("OUTDOOR_HS"))
+		  out = "Outside Hostel";
+	  
+	  else if(msg.startsWith("OUTDOOR_LH"))
+		  out = "Outside Library Building";
+	  
+	  else if(msg.startsWith("ACB")){
+		  out = "Academic Building";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  
+	  else if(msg.startsWith("LCB")){
+		  out = "Lecture Block";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  else if(msg.startsWith("LB")){
+		  out = "Library Building";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  else if(msg.startsWith("GH")){
+		  out = "Girls Hostel";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  
+	  else if(msg.startsWith("SRB")){
+		  out = "Service Block";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  
+	  else if(msg.startsWith("DB")){
+		  out = "Dining Block";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  else if(msg.startsWith("RESB")){
+		  out = "Faculty Residence";
+		  num = msg.match(/\d+/)[0];
+				  	
+	  }
+	  else 
+		  out=msg;
+	  
+	  //console.log(num);
+	  
+	  if(num != -1)
+		  out = out.concat(" Floor ".concat(num.toString()));
+	  
+	  return out;
+	}
+	  
+	  
+/*]]>*/		
+</script>
+<meta charset="utf-8"></meta>
+<title>Timeline | Track Yourself</title>
+</head>
+
+<body class="joy">
+
+	<!-- Header -->
+
+	<header class="primary-header container group">
+
+		<h1 class="logo">
+			<a href="/">Your <br /> Timeline
+			</a>
+		</h1>
+
+		<h3 class="tagline" th:inline="text">[[${user.getString('name')}]]<img style="margin-left:20px; vertical-align:middle; border-radius:50%; height:50px;" th:src="${img}" th:alt="${user.getString('name')}"/> 
+	</h3>
+    
+		<nav class="nav-joy primary-nav-joy">
+			<ul>
+
+				<li><a id="profile">Profile</a></li>
+				<li><a style="color:#648880;">Timeline</a></li>
+				<li><a id="timeline_charts">Timeline Charts</a></li>
+				<li><a id="time_spent">Time Spent</a></li>
+				<li><a id="custom_attendance">Custom Presence</a></li>
+				<li><a id="home">Home</a></li>
+				<li><a id="signout">Sign Out</a></li>
+			</ul>
+		</nav>
+
+	</header>
+	
+	
+<!-- Lead -->
+
+	<section class="row-alt">
+		<div class="lead container">
+		
+			
+       <div class="chip" id="name">
+			<label for="filled-in-box1" style="height:17px;" ></label>
+       Tag</div>
+		
+			
+			<div id="savehash" style="display:none;">
+				<button id = "savebtn" type ="button" class="btn btn-default"  value="save" >Save Hash</button><br/>			
+ 				
+ 				</div>
+			
+			<p><br/>View your timeline as</p>
+				
+        
+    <p class= "joy" id="blah">
+    
+        <input class="with-gap" checked="checked" name="group1" type="radio" id="test1" value="continous"/>
+      <label for="test1" style="color:#000;">Recent</label>
+    	&nbsp;&nbsp;&nbsp;&nbsp;OR&nbsp;&nbsp;
+      <input class="with-gap" name="group1" type="radio" id="test2" value="duration"/>
+      <label for="test2" style="color:#000;">Duration</label>
+        
+         <div id="datebar">
+      			 from 
+      			 <input type="date"  class="datepicker" id = "from" style="margin:0 15px 0 15px; width:inherit;"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;until
+				<input type="date"  class ="datepicker" id="to" style="margin:0 15px 0 15px; width:inherit;"/>
+				<button id = "btn" type ="button" class="btn btn-default"  value="Go" >Go</button>
+				 </div>
+    
+  
+        
+     </p>   
+			
+			
+      			
+		</div>
+	</section>
+
+	<!-- Main content -->
+
+	<section class="row">
+		<div class="container">
+
+			<!-- Workshops -->
+			<div th:with="length = ${logs.size()}">
+				<div th:if="${length} != 0">
+					<table class="joy">
+						<thead class="joy">
+							<tr class="joy">
+								<th class="joy" scope="row">Since&nbsp;&nbsp;&nbsp;&nbsp;</th>
+
+								<th class="joy" colspan="2" style = "text-align:center;">Location &amp; Duration</th>
+
+
+							</tr>
+						</thead>
+						<tbody class="joy" id="tbody">
+
+							<tr class="joy"
+								th:each="index : ${#numbers.sequence(0,#arrays.length(logs)-1)}">
+								
+
+								<th class="joy" scope="row"><time th:text="${logs[index].startTime}"></time></th>
+
+								<td class="joy" style="font-size: 18px; font-weight: 500;"><script
+										th:inline="javascript" type="text/javascript">
+    
+                  document.write(produceMessage(/*[[${logs[index].log.cLApName}]]*/ 
+                		  == null ? "Disconnected":/*[[${logs[index].log.cLApName}]]*/))
+</script></td>
+
+								<td class="joy" style="font-size: 18px; font-weight: 500;"
+									th:text="${logs[index].duration}"></td>
+
+							</tr>
+
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+
+		<div th:if="${length} == 0">
+			<p class="joy" style="margin-left: 50%;">No records found!</p>
+		</div>
+	</section>
+
+
+
+
+	<!-- Footer -->
+
+	<footer class="primary-footer-joy container group">
+		<script th:inline="javascript">
+	/* $(window).scroll(function() {
+	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+	           // ajax call get data from server and append to the div
+	    	
+	        $.get("/admin/trackuser/continue",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+            	
+	        	
+	        	console.log("data  "+data + "\nStatus: " + status)
+	        	console.log(data.get())
+	        	
+	        	console.log("loadmore");
+            var tr = document.createElement("tr");
+            var td1 = document.createElement("td");
+            var td2 = document.createElement("td");
+            var th = document.createElement("th");
+            var time = document.createElement("time");
+            
+            var tb = document.getElementById("tbody");
+            tb.appendChild(tr);
+            tr.appendChild(th);
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            th.appendChild(time);
+            
+           // tr.setAttribute("th:")
+            
+            
+    })
+	        }}); */
+	          /*  new_element.hide().appendTo('.your_div').fadeIn(); 
+	           $(window).scrollTop($(window).scrollTop()-1); */
+
+	</script> 
+		<small>&copy; IIIT - Delhi | Joy Aneja</small>
+		<script src="//code.jquery.com/jquery-2.1.1.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+		<script th:inline="javascript">
+/*<![CDATA[*/
+          /*  $(document).ready(function(){
+        	   
+        	   if(GetURLParameter('from')){
+        	    	console.log("duration page");
+        	    	var $inputfrom = $('#from').pickadate();
+        	   		var pickerfrom = $inputfrom.pickadate('picker');
+        	   	  	
+        	   	 	var $inputto = $('#to').pickadate();
+        			var pickerto = $inputto.pickadate('picker');
+        			
+        			pickerfrom.set('select',GetURLParameter('from'));
+        			pickerto.set('select',GetURLParameter('to'));
+        			
+        			
+        	    }
+        	   
+        	   
+           });
+            */
+           
+           
+   function onLoad() {
+		console.log('Onload called');
+	  gapi.load('auth2', function() {
+	    gapi.auth2.init();
+	    
+	  });
+	 
+	}
+   
+   
+   $(document).ready(function(){
+ 
+ 		$.get("/hmacinfo",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+       
+   		
+   		
+	   		if(data == "HashedMacNotFound"){
+	   			$("#name").html(GetURLParameter('hashedmac'));
+	   			$("#savehash").slideDown("slow", function(){});
+	   			console.log("data");
+	   		}
+	   		else{
+	   			var json = JSON.parse(data);
+	   			var child = $("#name").children();
+	   			$("#name").html(json.name);
+	   			$("#name").prepend(child);
+	   			console.log(json.name);
+	   		}
+	   		//alert("Data: " + data + "\nStatus: " + status);
+	   	});
+ 		
+ 		
+ 		$("#savebtn").click(function(){
+ 			console.log("saving hash");
+ 			
+ 			
+ 			var text = GetURLParameter('hashedmac')+" \n\nYou can save your hashed MAC, so that you need not type it again.\nDon't worry! your hashed MAC is completely hidden from any prying eyes.\n\nPlease name your device.";
+ 		
+ 			
+ 			var name = prompt(text);
+ 		     
+ 		     if (name) {
+ 		    	$.get("/addhmac",{hashedmac : GetURLParameter('hashedmac'), name: name}, function(data, status){
+ 	 				window.location.reload();
+ 	 				alert("Added succesfully! " );
+ 	 			}); 
+ 		    	
+ 		     }
+ 		     else alert("Snap! You pressed Cancel or no value was entered!");
+ 			
+ 			/* $.get("/addhmac",{hashedmac : GetURLParameter('hashedmac')}, function(data, status){
+ 				window.location.reload(); 
+ 			}); */
+ 		})
+ 		
+ 		
+});
+
+   
+   $(document).ready(function(){
+    
+	   /* google Plus  */
+	   
+	   
+	$("#signout").click(function(){
+    	console.log('sign out.');
+    	  var auth2 = gapi.auth2.getAuthInstance();
+    	  auth2.signOut().then(function () {
+    	    console.log('User signed out.');
+    	   
+    	  });
+    	  window.location="/";
+    });
+    $("#profile").click(function(){
+   			console.log("jai mata di!"); 	
+    	  
+   			window.location ="/admin/profile?hashedmac="+GetURLParameter('hashedmac');
+   			
+   			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+    });
+    $("#timeline_charts").click(function(){
+		console.log("jai mata di!"); 	
+		window.location ="/admin/trackuser/charts?hashedmac="+GetURLParameter('hashedmac');
+		
+	});
+    $("#home").click(function(){
+			//console.log("jai mata di!"); 	
+	  
+			window.location ="/welcome";
+			
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+    $("#time_spent").click(function(){
+		console.log("jai mata di!"); 	
+		window.location ="/admin/timespent?hashedmac="+GetURLParameter('hashedmac');
+		
+	});
+    $("#custom_attendance").click(function(){
+		console.log("jai mata di!"); 	
+		window.location ="/admin/custom-attendance?hashedmac="+GetURLParameter('hashedmac');
+		
+	});
+    
+
+    	/* Calendars */
+    
+    
+    $("#btn").click(function(){
+			console.log("jai mata di!"); 	
+			var $inputfrom = $('#from').pickadate();
+	   		var pickerfrom = $inputfrom.pickadate('picker');
+	   	  	
+	   	 	var $inputto = $('#to').pickadate();
+			var pickerto = $inputto.pickadate('picker');
+			
+			var location = "/admin/trackuser/duration?hashedmac="
+					+GetURLParameter('hashedmac')
+					+"&from="+pickerfrom.get('highlight').obj.getTime()
+					+"&to="+pickerto.get('highlight').obj.getTime()
+					;
+			console.log(location);
+			window.location = location;
+			//$.get("/admin/profile",{ hashedmac: GetURLParameter('hashedmac')})
+	});
+	
+    
+   
+    
+});
+  	
+   
+   $('#from').pickadate({
+	    selectMonths: true, // Creates a dropdown to control month
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    min: new Date(2015,11,1),
+   		max: true,
+   		onSet:function(){
+   			$( "#to" ).prop( "disabled", false );
+   		 var $inputfrom = $('#from').pickadate();
+   		var pickerfrom = $inputfrom.pickadate('picker');
+   	  	
+   	 var $inputto = $('#to').pickadate();
+		var pickerto = $inputto.pickadate('picker');
+	  	
+		pickerto.set('min',pickerfrom.get('highlight').obj);
+   		}
+	    
+	  });
+	
+   $('#to').pickadate({
+	    selectMonths: true, // Creates a dropdown to control month
+	    selectYears: 15, // Creates a dropdown of 15 years to control year
+	    min: new Date(2015,11,1),
+  		max: true,
+  		onSet: function(){
+  			$( "#btn" ).prop( "disabled", false );
+  		}
+	    
+	  });
+	
+   	/* Radio Button */
+   
+   $(document).ready(function(){
+	   $( "#to" ).prop( "disabled", true );
+	   $( "#btn" ).prop( "disabled", true );
+	   $("#datebar").hide("fast");
+	   $("input[name=group1]:radio").click(
+			   function(){
+				   
+				   switch($(this).val()){
+				   case "duration":
+					   $("#datebar").show("slow");
+					   break;
+				   
+				   case "continous":
+					   $("#datebar").hide("slow");
+				   		break;
+				   		
+				   }
+			   });
+	   
+	   
+	     });
+   
+  
+   	
+   	
+   /*]]>*/	
+</script>
+		
+		<script src="https://apis.google.com/js/platform.js?onload=onLoad"></script>
+		<!-- <nav class="nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+         <li><a href="speakers.html">Speakers</a></li>
+         <li><a href="schedule.html">Schedule</a></li>
+         <li><a href="venue.html">Venue</a></li>
+         <li><a href="register.html">Register</a></li>
+        </ul>
+      </nav>
+ -->
+	</footer>
+
+	
+</body>
+</html>
