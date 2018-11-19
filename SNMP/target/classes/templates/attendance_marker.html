@@ -2,10 +2,480 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
   <head>
- 
 
-       
-    <title>Home | Track Yourself hioashjasb</title>
+	  <script  th:src="@{/assets/js/sha256.js}"></script>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	  <script th:inline="javascript">
+  	  /*<![CDATA[*/
+	  $(function(){
+
+	  	var buildings = ["Old Academic", "Lecture Block", "Student Centre", "New Academic Block", "Seminar Block", "Outdoor"];
+	  	var oaNames = ["ACB Ground floor Cafeteria (Glass Room)",
+			"ACB Ground floor Cafeteria",
+			"Academic Block 1st Floor A Wing",
+			"Academic First Floor Middle",
+			"Academic Block 1st Floor B Wing",
+			"Academic Block 2nd floor A Wing",
+			"Academic Block 2nd floor A Wing ",
+			"Academic Block 2nd floor B Wing",
+			"Academic Block 2nd floor B Wing",
+			"Academic Block 3rd Floor B Wing",
+			"Academic Third Floor B Wing",
+			"Academic Block 3rd Floor A Wing",
+			"Academic Block 3rd Floor A Wing(Near A301)",
+			"Academic Block 4th Floor B Wing",
+			"Academic Forth Floor Middile side",
+			"New PHD LAB 4th floor A wing",
+			"Academic Block Fifth Floor A Wing",
+			"Academic Block Fifth Floor B Wing",
+			"Academic Fifth Floor Middle"];
+	  	var oaValues = [CryptoJS.SHA256("c4:0a:cb:5c:0b:f0"),
+			CryptoJS.SHA256("c4:0a:cb:2d:97:10"),
+			CryptoJS.SHA256("c4:0a:cb:2d:c6:00"),
+			CryptoJS.SHA256("c4:0a:cb:2d:ce:80"),
+			CryptoJS.SHA256("6c:dd:30:40:f5:20"),
+			CryptoJS.SHA256("c4:0a:cb:2d:78:00"),
+			CryptoJS.SHA256("c4:0a:cb:2d:82:f0"),
+			CryptoJS.SHA256("c4:0a:cb:25:d8:20"),
+			CryptoJS.SHA256("c4:0a:cb:2d:71:20"),
+			CryptoJS.SHA256("c4:0a:cb:5c:07:00"),
+			CryptoJS.SHA256("c4:0a:cb:2d:75:50"),
+			CryptoJS.SHA256("c4:0a:cb:25:bf:70"),
+			CryptoJS.SHA256("c4:0a:cb:25:a8:30"),
+			CryptoJS.SHA256("e4:aa:5d:c3:69:10"),
+			CryptoJS.SHA256("c4:0a:cb:25:c4:40"),
+			CryptoJS.SHA256("c4:0a:cb:2d:bb:e0"),
+			CryptoJS.SHA256("c4:0a:cb:5c:20:90"),
+			CryptoJS.SHA256("c4:0a:cb:2c:f4:60"),
+			CryptoJS.SHA256("c4:0a:cb:25:e4:80")];
+
+		var lbNames = ["C01(Back Side)",
+			"C02",
+			"C03",
+			"C01(Near Projector)",
+			"C11(Back Side)",
+			"C12",
+			"C13",
+			"C11(Near Projector)",
+			"C24",
+			"C23",
+			"C22",
+			"C21(Near Projector Screen)",
+			"Lecture hall C21(Backside)"];
+		var lbValues = [CryptoJS.SHA256("c4:0a:cb:5c:14:c0"),
+			CryptoJS.SHA256("c4:0a:cb:25:bb:70"),
+			CryptoJS.SHA256("c4:0a:cb:25:b5:a0"),
+			CryptoJS.SHA256("74:a2:e6:3f:69:70"),
+			CryptoJS.SHA256("c4:0a:cb:25:f2:d0"),
+			CryptoJS.SHA256("c4:0a:cb:2d:48:20"),
+			CryptoJS.SHA256("c4:0a:cb:2d:c6:30"),
+			CryptoJS.SHA256("78:ba:f9:af:cf:90"),
+			CryptoJS.SHA256("c4:0a:cb:5c:0f:10"),
+			CryptoJS.SHA256("c4:0a:cb:2c:e6:20"),
+			CryptoJS.SHA256("c4:0a:cb:2d:7d:50"),
+			CryptoJS.SHA256("78:ba:f9:af:cb:10"),
+			CryptoJS.SHA256("c4:0a:cb:25:cf:50")];
+
+		var scNames = ["Dining Block Ground floor",
+			"Dining Block Ground Floor",
+			"Ground floor Incubation Room Unit 2",
+			"Dining Block First Floor",
+			"Dining Block Second Floor",
+			"Ground floor Incubation Room",
+			"Dining Hall Third Floor",
+			"Dining block 3rd floor  (near by GYM)"];
+		var scValues = [CryptoJS.SHA256("c4:0a:cb:5c:10:e0"),
+			CryptoJS.SHA256("c4:0a:cb:2d:84:00"),
+			CryptoJS.SHA256("2c:3e:cf:ca:ec:a0"),
+			CryptoJS.SHA256("c4:0a:cb:2d:c4:80"),
+			CryptoJS.SHA256("c4:0a:cb:2d:84:e0"),
+			CryptoJS.SHA256("50:0f:80:b6:f8:a0"),
+			CryptoJS.SHA256("c4:0a:cb:5c:03:20"),
+			CryptoJS.SHA256("c4:0a:cb:25:96:50")];
+
+		var oNames = ["Between Lecture hall and Library block"];
+		var oValues = [CryptoJS.SHA256("84:b8:02:f3:ef:a0")];
+
+		var nabNames = ["ground floor lecture hall back side A006",
+			"ground floor lecture hall front side A006",
+			"ground floor lecture hall 2 A007",
+			"ground floor lecture hall 2 A007",
+			"1st floor center  ",
+			"1st floor B Wing",
+			"1st floor Lecture Block(A-106)",
+			"1st floor Lecture Block(A-106)",
+			"1st floor Lecture Block(B-105)",
+			"1st floor Lecture Block(B-105)",
+			"2nd floor A Wing",
+			"2nd floor A Wing",
+			"2nd floor Center (near by stairs)",
+			"2nd floor B Wing",
+			"2nd floor B Wing",
+			"2nd floor LAB(B-213)",
+			"3rd floor A Wing",
+			"3rd floor A Wing",
+			"3rd floor Center (near by stairs)",
+			"3rd floor B Wing",
+			"3rd floor B Wing",
+			"3rd floor LAB(A-313)",
+			"3rd floor LAB(A-318)",
+			"3rd floor LAB(B-313)",
+			"4th floor A Wing",
+			"4th floor A Wing",
+			"4th floor Center (near by stairs)",
+			"4th floor B Wing",
+			"4th floor B Wing",
+			"4th floor LAB(A-413)",
+			"4th floor LAB(A-415)",
+			"4th floor LAB(A-416)",
+			"5th floor A Wing",
+			"5th floor A Wing",
+			"5th floor Center (near by stairs)",
+			"5th floor B Wing",
+			"5th floor B Wing",
+			"5th floor LAB( A-513)",
+			"5th floor LAB( A-515)",
+			"5th floor LAB( A-516)",
+			"5th floor LAB( A-518)",
+			"5th floor LAB( B-513)",
+			"5th floor LAB( B-515)",
+			"5th floor LAB( B-516)",
+			"5th floor LAB( B-519)",
+			"6th Floor A wing",
+			"6th Floor A wing",
+			"6th Floor A wing((near by stairs))",
+			"6th Floor B wing",
+			"6th Floor B wing",
+			"6th floor LAB(A-611)",
+			"6th floor LAB(A-613)",
+			"6th floor LAB(A-616)",
+			"6th floor LAB(B-611)",
+			"6th floor LAB(B-614)",
+			"Director Room ",
+			"Director Office (Near by Meeting Room)",
+			"Dean Room",
+			"Board Room",
+			"Senate Room"];
+		var nabValues = [CryptoJS.SHA256("70:db:98:07:b6:a0"),
+			CryptoJS.SHA256("70:db:98:07:84:20"),
+			CryptoJS.SHA256("00:38:df:20:72:c0"),
+			CryptoJS.SHA256("00:38:df:20:7a:80"),
+			CryptoJS.SHA256("00:38:df:20:72:e0"),
+			CryptoJS.SHA256("6c:dd:30:3f:6a:60"),
+			CryptoJS.SHA256("f8:0b:cb:ec:67:80"),
+			CryptoJS.SHA256("70:db:98:07:74:a0"),
+			CryptoJS.SHA256("f8:0b:cb:f3:7d:a0"),
+			CryptoJS.SHA256("f8:0b:cb:e8:59:20"),
+			CryptoJS.SHA256("6c:dd:30:41:12:20"),
+			CryptoJS.SHA256("00:38:df:20:73:40"),
+			CryptoJS.SHA256("00:38:df:25:fb:80"),
+			CryptoJS.SHA256("00:38:df:20:77:00"),
+			CryptoJS.SHA256("00:38:df:20:75:00"),
+			CryptoJS.SHA256("70:db:98:14:a0:60"),
+			CryptoJS.SHA256("00:38:df:20:7b:00"),
+			CryptoJS.SHA256("00:38:df:20:76:e0"),
+			CryptoJS.SHA256("00:38:df:20:77:40"),
+			CryptoJS.SHA256("00:38:df:20:76:80"),
+			CryptoJS.SHA256("00:38:df:20:74:e0"),
+			CryptoJS.SHA256("70:db:98:07:8e:60"),
+			CryptoJS.SHA256("70:db:98:07:82:e0"),
+			CryptoJS.SHA256("40:01:7a:53:98:60"),
+			CryptoJS.SHA256("00:38:df:20:75:e0"),
+			CryptoJS.SHA256("00:38:df:20:7a:e0"),
+			CryptoJS.SHA256("00:38:df:20:7b:a0"),
+			CryptoJS.SHA256("00:38:df:25:e0:c0"),
+			CryptoJS.SHA256("00:38:df:20:75:40"),
+			CryptoJS.SHA256("40:01:7a:53:97:20"),
+			CryptoJS.SHA256("70:db:98:07:84:a0"),
+			CryptoJS.SHA256("70:db:98:03:fe:a0"),
+			CryptoJS.SHA256("6c:dd:30:3f:5f:e0"),
+			CryptoJS.SHA256("00:38:df:25:fc:80"),
+			CryptoJS.SHA256("00:38:df:20:73:60"),
+			CryptoJS.SHA256("6c:dd:30:41:2b:00"),
+			CryptoJS.SHA256("6c:dd:30:41:2f:40"),
+			CryptoJS.SHA256("f8:0b:cb:e8:6d:20"),
+			CryptoJS.SHA256("f8:0b:cb:e8:66:e0"),
+			CryptoJS.SHA256("40:01:7a:53:98:40"),
+			CryptoJS.SHA256("70:db:98:07:b8:40"),
+			CryptoJS.SHA256("40:01:7a:53:97:c0"),
+			CryptoJS.SHA256("40:01:7a:53:98:a0"),
+			CryptoJS.SHA256("70:db:98:14:b9:20"),
+			CryptoJS.SHA256("6c:dd:30:41:2d:40"),
+			CryptoJS.SHA256("00:38:df:20:73:20"),
+			CryptoJS.SHA256("00:38:df:20:77:20"),
+			CryptoJS.SHA256("00:38:df:20:73:00"),
+			CryptoJS.SHA256("00:38:df:25:f9:00"),
+			CryptoJS.SHA256("00:38:df:20:73:80"),
+			CryptoJS.SHA256("70:db:98:04:06:e0"),
+			CryptoJS.SHA256("40:01:7a:53:96:80"),
+			CryptoJS.SHA256("70:db:98:14:b8:c0"),
+			CryptoJS.SHA256("f8:0b:cb:f3:88:00"),
+			CryptoJS.SHA256("70:db:98:14:b9:a0"),
+			CryptoJS.SHA256("c4:0a:cb:2d:bb:d0"),
+			CryptoJS.SHA256("c4:0a:cb:25:ff:50"),
+			CryptoJS.SHA256("c4:0a:cb:2d:51:40"),
+			CryptoJS.SHA256("6c:dd:30:3f:64:80"),
+			CryptoJS.SHA256("00:5d:73:27:fe:c0")];
+
+		var sbNames = ["Electrical room ",
+			"Lift Loby",
+			"Open Area",
+			"Open Area",
+			"C101  (Front Side)",
+			"C101  (Right Side)",
+			"C101  (Left Side)",
+			"Lobby",
+			"C102  (Front Side)",
+			"C102  (Back Side)",
+			"C102  (Right Side)",
+			"C102 (Left Side)",
+			"C208",
+			"C209",
+			"C210",
+			"C211",
+			"C212",
+			"C213",
+			"C214",
+			"C215",
+			"C216",
+			"LAB 301",
+			"LAB 302",
+			"LAB 303",
+			"LAB 304",
+			"LAB 305",
+			"LAB 306",
+			"lobby (near by 307)",
+			"Placement Office",
+			"lobby (near by 322)",
+			"LAB 315",
+			"LAB 316",
+			"LAB 317 Front Side",
+			"LAB 317 Back Side",
+			"LAB 318",
+			"LAB 319",
+			"LAB 320 Front Side",
+			"LAB 320 Back Side",
+			"LAB 321 Front Side",
+			"LAB 321 Back Side"];
+		var sbValues = [CryptoJS.SHA256("6c:dd:30:3f:63:c0"),
+			CryptoJS.SHA256("6c:dd:30:3f:73:00"),
+			CryptoJS.SHA256("6c:dd:30:3f:71:c0"),
+			CryptoJS.SHA256("6c:dd:30:40:cc:00"),
+			CryptoJS.SHA256("38:0e:4d:d5:9b:c0"),
+			CryptoJS.SHA256("40:01:7a:53:c6:20"),
+			CryptoJS.SHA256("40:01:7a:53:98:80"),
+			CryptoJS.SHA256("6c:dd:30:3f:70:60"),
+			CryptoJS.SHA256("40:01:7a:53:c3:e0"),
+			CryptoJS.SHA256("00:5d:73:27:e9:a0"),
+			CryptoJS.SHA256("6c:b2:ae:cf:0b:e0"),
+			CryptoJS.SHA256("6c:b2:ae:cf:0c:a0"),
+			CryptoJS.SHA256("2c:3e:cf:8f:52:60"),
+			CryptoJS.SHA256("c4:0a:cb:25:c3:f0"),
+			CryptoJS.SHA256("2c:3e:cf:ca:eb:70"),
+			CryptoJS.SHA256("2c:3e:cf:b6:be:a0"),
+			CryptoJS.SHA256("34:a8:4e:c2:a5:d0"),
+			CryptoJS.SHA256("b0:00:b4:20:63:a0"),
+			CryptoJS.SHA256("b0:00:b4:20:69:30"),
+			CryptoJS.SHA256("2c:3e:cf:8f:4e:e0"),
+			CryptoJS.SHA256("b0:00:b4:20:6b:f0"),
+			CryptoJS.SHA256("6c:dd:30:41:28:40"),
+			CryptoJS.SHA256("6c:dd:30:41:01:40"),
+			CryptoJS.SHA256("6c:dd:30:3f:65:00"),
+			CryptoJS.SHA256("6c:dd:30:41:08:20"),
+			CryptoJS.SHA256("6c:dd:30:41:2f:80"),
+			CryptoJS.SHA256("6c:dd:30:41:0a:c0"),
+			CryptoJS.SHA256("6c:dd:30:3f:6a:a0"),
+			CryptoJS.SHA256("6c:dd:30:3f:71:40"),
+			CryptoJS.SHA256("6c:dd:30:41:27:00"),
+			CryptoJS.SHA256("6c:dd:30:40:f8:20"),
+			CryptoJS.SHA256("6c:dd:30:41:30:00"),
+			CryptoJS.SHA256("6c:dd:30:3f:69:00"),
+			CryptoJS.SHA256("6c:dd:30:40:cb:a0"),
+			CryptoJS.SHA256("6c:dd:30:3f:6a:c0"),
+			CryptoJS.SHA256("6c:dd:30:3f:62:c0"),
+			CryptoJS.SHA256("6c:dd:30:41:20:60"),
+			CryptoJS.SHA256("6c:dd:30:40:cf:80"),
+			CryptoJS.SHA256("6c:dd:30:41:05:00"),
+			CryptoJS.SHA256("6c:dd:30:3f:5e:a0")];
+		var buildingValuesMap = {"Old Academic": oaValues, "Lecture Block": lbValues, "Student Centre": scValues, "New Academic Block": nabValues, "Seminar Block": sbValues, "Outdoor":oValues};
+	  	var buildingNamesMap = {"Old Academic": oaNames, "Lecture Block": lbNames, "Student Centre": scNames, "New Academic Block": nabNames, "Seminar Block": sbNames, "Outdoor":oNames};
+
+	  	for (var i=0;i<buildings.length;i++) {
+   			$('<option/>').val(buildings[i]).html(buildings[i]).appendTo('#building');
+   		}
+
+   		$('#location').empty();
+   		$('#building').on('change', function() {
+   			$('#location').empty();
+   			if (this.options.length==0) {
+
+   			}
+   			else {
+   				for (i=0;i<this.options.length;i++) {
+  				//console.log(this.options[i].value);
+	  				if (this.options[i].selected) {
+	  					nameArray = buildingNamesMap[this.options[i].value];
+	  					valueArray = buildingValuesMap[this.options[i].value];
+	  					for (var j=0;j<nameArray.length;j++) {
+	   						$('<option/>').val(valueArray[j]).html(nameArray[j]).appendTo('#location');
+	   					}
+	  				}
+  				}
+   			}
+		});
+
+		//new Date(year, month, day, hours, minutes, seconds, milliseconds)
+		var date_range_list = [];
+		$("#from_date").change(function(){
+			date_range_list = [];
+			var d1 = new Date($('#from_date').val());
+			var d2 = new Date($('#to_date').val());
+			var from_time_arr = ($('#from_time').val()).split(":");
+			if (from_time_arr[0] != '00' || from_time_arr[0] != '0') {
+				from_time_arr[0] = from_time_arr[0].replace(/^0+/, '');
+			}
+			var to_time_arr = ($('#to_time').val()).split(":");
+			if (to_time_arr[0] != '00' || to_time_arr[0] != '0') {
+				to_time_arr[0] = to_time_arr[0].replace(/^0+/, '');
+			}
+			for (var d = new Date(d1.getFullYear(), d1.getMonth(), d1.getUTCDate(), from_time_arr[0], from_time_arr[1], 0, 0);
+				d <= new Date(d2.getFullYear(), d2.getMonth(), d2.getUTCDate(), to_time_arr[0], to_time_arr[1], 0, 0);
+				d.setDate(d.getDate() + 1)) {
+
+				date_range_list.push([new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(from_time_arr[0]),
+				parseInt(from_time_arr[1]),
+				0, 0).getTime(),
+				new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(to_time_arr[0]),
+				parseInt(to_time_arr[1]),
+				0,
+				0).getTime()]);
+
+			}
+			$('#date_range_list').val(date_range_list);
+		});
+		$("#from_time").change(function(){
+			date_range_list = [];
+			var d1 = new Date($('#from_date').val());
+			var d2 = new Date($('#to_date').val());
+			var from_time_arr = ($('#from_time').val()).split(":");
+			if (from_time_arr[0] != '00' || from_time_arr[0] != '0') {
+				from_time_arr[0] = from_time_arr[0].replace(/^0+/, '');
+			}
+			var to_time_arr = ($('#to_time').val()).split(":");
+			if (to_time_arr[0] != '00' || to_time_arr[0] != '0') {
+				to_time_arr[0] = to_time_arr[0].replace(/^0+/, '');
+			}
+			for (var d = new Date(d1.getFullYear(), d1.getMonth(), d1.getUTCDate(), from_time_arr[0], from_time_arr[1], 0, 0);
+				d <= new Date(d2.getFullYear(), d2.getMonth(), d2.getUTCDate(), to_time_arr[0], to_time_arr[1], 0, 0);
+				d.setDate(d.getDate() + 1)) {
+
+				date_range_list.push([new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(from_time_arr[0]),
+				parseInt(from_time_arr[1]),
+				0, 0).getTime(),
+				new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(to_time_arr[0]),
+				parseInt(to_time_arr[1]),
+				0,
+				0).getTime()]);
+
+			}
+			$('#date_range_list').val(date_range_list);
+		});
+
+		$("#to_date").change(function(){
+			date_range_list = [];
+			var d1 = new Date($('#from_date').val());
+			var d2 = new Date($('#to_date').val());
+			var from_time_arr = ($('#from_time').val()).split(":");
+			if (from_time_arr[0] != '00' || from_time_arr[0] != '0') {
+				from_time_arr[0] = from_time_arr[0].replace(/^0+/, '');
+			}
+			var to_time_arr = ($('#to_time').val()).split(":");
+			if (to_time_arr[0] != '00' || to_time_arr[0] != '0') {
+				to_time_arr[0] = to_time_arr[0].replace(/^0+/, '');
+			}
+			for (var d = new Date(d1.getFullYear(), d1.getMonth(), d1.getUTCDate(), from_time_arr[0], from_time_arr[1], 0, 0);
+				d <= new Date(d2.getFullYear(), d2.getMonth(), d2.getUTCDate(), to_time_arr[0], to_time_arr[1], 0, 0);
+				d.setDate(d.getDate() + 1)) {
+
+				date_range_list.push([new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(from_time_arr[0]),
+				parseInt(from_time_arr[1]),
+				0, 0).getTime(),
+				new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(to_time_arr[0]),
+				parseInt(to_time_arr[1]),
+				0,
+				0).getTime()]);
+
+			}
+			$('#date_range_list').val(date_range_list);
+		});
+		$("#to_time").change(function(){
+			date_range_list = [];
+			var d1 = new Date($('#from_date').val());
+			var d2 = new Date($('#to_date').val());
+			var from_time_arr = ($('#from_time').val()).split(":");
+			if (from_time_arr[0] != '00' || from_time_arr[0] != '0') {
+				from_time_arr[0] = from_time_arr[0].replace(/^0+/, '');
+			}
+			var to_time_arr = ($('#to_time').val()).split(":");
+			if (to_time_arr[0] != '00' || to_time_arr[0] != '0') {
+				to_time_arr[0] = to_time_arr[0].replace(/^0+/, '');
+			}
+			for (var d = new Date(d1.getFullYear(), d1.getMonth(), d1.getUTCDate(), from_time_arr[0], from_time_arr[1], 0, 0);
+				d <= new Date(d2.getFullYear(), d2.getMonth(), d2.getUTCDate(), to_time_arr[0], to_time_arr[1], 0, 0);
+				d.setDate(d.getDate() + 1)) {
+
+				date_range_list.push([new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(from_time_arr[0]),
+				parseInt(from_time_arr[1]),
+				0, 0).getTime(),
+				new Date(
+				d.getFullYear(),
+				d.getMonth(),
+				d.getUTCDate(),
+				parseInt(to_time_arr[0]),
+				parseInt(to_time_arr[1]),
+				0,
+				0).getTime()]);
+
+			}
+			//console.log(date_range_list);
+			$('#date_range_list').val(date_range_list);
+		});
+
+
+
+	  });
+	  /*]]>*/
+  </script>
+
+    <title>Home | Track Yourself</title>
     
     
   </head>
@@ -16,26 +486,33 @@
   			Select excel sheet to upload : 	<input type="file" name="mac" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
 			<br></br><br></br>
   		</div>
+		<div>
+			Select building :
+			<select id='building' multiple='multiple' name='building'>
+
+			</select>
+			<br></br><br></br>
+		</div>
   		<div>
-  			Select location : <select multiple='multiple' name='location'> 
-									<option value='val1'>val1</option>
-									<option value='val2'>val2</option>
-									<option value='val3'>val3</option>
-							</select>
+  			Select location :
+			<select id='location' multiple='multiple' name='location'>
+
+			</select>
 		<br></br><br></br>
   		</div>
   			
   		<div>
-  			From Date : <input type="date" name="fromDate"/>   To Date : <input type="date" name="toDate"/><br></br><br></br>
+  			From Date : <input type="date" id='from_date' name="fromDate"/>   To Date : <input type="date" id='to_date' name="toDate"/><br></br><br></br>
   			
   		</div>
   		
   		<div>
-  			From Time : <input type="time" name="fromTime"/>  To Time : <input type="time" name="toTime"/><br></br><br></br>
+  			From Time : <input type="time" id='from_time' name="fromTime"/>  To Time : <input type="time" id='to_time' name="toTime"/><br></br><br></br>
   		</div>
+		<input type="hidden" name="dateRangeList" id="date_range_list"/>
   		
   		<div>
-  			Duration(in hours) : <input type="text" name="duration"/><br></br><br></br>
+  			Duration(in minutes) : <input type="number" name="duration"/><br></br><br></br>
   		</div>
   		
   		<div>
@@ -43,14 +520,6 @@
   		</div>
   	</form>
   </div>
-	
-		
-		
-				
-		 
-		
-      	
-      
-	
+
   </body>
 </html>

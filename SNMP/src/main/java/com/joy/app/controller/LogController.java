@@ -95,16 +95,6 @@ public class LogController {
 //		return "attendance_marker";
 //	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String showMarker(HttpSession session) {
-//		if(session.getAttribute("id_token")==null 
-//				)
-//			
-//			return "login";
-		
-		return "attendance_marker";
-	}
-	
 	@RequestMapping(value = "/admin/trackuser", method = RequestMethod.GET)
 	public String trackUser(Model track,
 			@RequestParam(value = "hashedmac") String mac,

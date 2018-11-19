@@ -23,7 +23,7 @@ import java.util.List;
 public class uploadController {
 	
 
-	private static String UPLOADED_FOLDER = "D://temp//";
+	private static String UPLOADED_FOLDER = "/Users/nitinkumar/Desktop";
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String singleFileUpload(@RequestParam("mac") MultipartFile file,

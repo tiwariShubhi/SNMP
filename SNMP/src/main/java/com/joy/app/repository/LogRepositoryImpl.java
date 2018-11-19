@@ -284,7 +284,46 @@ public class LogRepositoryImpl implements LogRepositoryCustom{
 		
 		
 	}
-	
+
+	/**
+	 * Returns all the logs which were present for the access point during the time duration
+	 * Results not sorted! Check if need to sort
+	 * @param ApHash
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	@Override
+	public List<Log> findHashedApMacRunState(String ApHash, Date from, Date to) {
+		// TODO Auto-generated method stub
+
+		//Miss a record if ts and endTs lie outside interval
+		Criteria criteria = new Criteria()
+				.orOperator(
+						new Criteria().andOperator(
+								Criteria.where("cldcApMacAddress").is(ApHash),
+								Criteria.where("oid").is("ciscoLwappDot11ClientMovedToRunState"),
+
+								Criteria.where("ts").gte(from),
+								Criteria.where("ts").lte(to)
+
+						),
+						new Criteria().andOperator(
+								Criteria.where("cldcApMacAddress").is(ApHash),
+								Criteria.where("oid").is("ciscoLwappDot11ClientMovedToRunState"),
+
+								Criteria.where("endTs").gte(from),
+								Criteria.where("endTs").lte(to)
+						)
+
+				);
+
+		List<Log> results = mongoTemplate.find(Query.query(criteria),Log.class);
+
+		return results;
+
+
+	}
 
 	
 	@Override

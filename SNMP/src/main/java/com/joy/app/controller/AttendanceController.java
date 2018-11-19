@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -30,6 +28,8 @@ import com.joy.app.model.Log;
 import com.joy.app.model.NamedHashEncryptMac;
 import com.joy.app.repository.LogRepository;
 import com.joy.app.repository.UserRepository;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 
@@ -55,6 +55,92 @@ public class AttendanceController {
 //		
 //		return "attendance_marker";
 //	}
+
+	@RequestMapping(value = "/apinfo", method = RequestMethod.GET)
+	public String showMarker(HttpSession session) {
+//		if(session.getAttribute("id_token")==null
+//				)
+//
+//			return "login";
+
+		return "access_point_info";
+	}
+
+
+	@RequestMapping(value = "/apconnections", method = RequestMethod.POST)
+	public String accessPointConnections(@RequestParam("location") List<String> hapmacs,
+								   @RequestParam("duration") String duration, //duration is in minutes
+								   @RequestParam("fromDateMillis") String datefrom,
+										 @RequestParam("toDateMillis") String dateto,
+										 HttpSession session)
+	{
+		//if(session.getAttribute("id_token")==null)
+			//return null;
+
+		//LocalDateTime a1 = Instant.ofEpochMilli(Long.parseLong("1538103600000")).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		//LocalDateTime a2 = Instant.ofEpochMilli(Long.parseLong("1538114400000")).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		LocalDateTime a1 = Instant.ofEpochMilli(Long.parseLong(datefrom)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		LocalDateTime a2 = Instant.ofEpochMilli(Long.parseLong(dateto)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		Date a1Converted = Date.from(a1.atZone(ZoneId.systemDefault()).toInstant());
+		Date a2Converted = Date.from(a2.atZone(ZoneId.systemDefault()).toInstant());
+
+		//List<Log> oA = logRepository.findHashedApMacRunState("f84094f40f793db34c13a24e5b68111e535cf89a0b84202c1a1e32296be6bc73",
+		//        Date.from(a1.atZone(ZoneId.systemDefault()).toInstant()),
+		//        Date.from(a2.atZone(ZoneId.systemDefault()).toInstant()));
+
+		Map<String, Long> hmacDurationTracker = new HashMap<>();
+		for (String hapmac: hapmacs) {
+			List<Log> presentLogs = logRepository.findHashedApMacRunState(hapmac, a1Converted, a2Converted);
+			for (Log currentLog : presentLogs) {
+				if (currentLog.getEndTs() != null) {
+					long endTsMillis = currentLog.getEndTs().getTime();
+					long startTsMillis = currentLog.getTs().getTime();
+					if (startTsMillis < a1Converted.getTime()) {
+						startTsMillis = a1Converted.getTime();
+					}
+					if (endTsMillis > a2Converted.getTime()) {
+						endTsMillis = a2Converted.getTime();
+					}
+					long timeDuration = endTsMillis - startTsMillis;
+
+					if (hmacDurationTracker.containsKey(currentLog.getCldcClientMacAddress())) {
+						long existingTime = hmacDurationTracker.get(currentLog.getCldcClientMacAddress());
+						hmacDurationTracker.put(currentLog.getCldcClientMacAddress(), timeDuration + existingTime);
+					}
+					else {
+						//long timeDuration = currentLog.getEndTs().getTime() - currentLog.getTs().getTime();
+						hmacDurationTracker.put(currentLog.getCldcClientMacAddress(), timeDuration);
+					}
+				}
+				else {
+					//glitch in system/records
+					//System.out.println(currentLog);
+				}
+			}
+		}
+
+
+		List<String> positiveHmacs = new ArrayList<>();
+
+		System.out.println(hmacDurationTracker);
+
+		for (Map.Entry<String, Long> entry: hmacDurationTracker.entrySet()) {
+			long minutes = entry.getValue() / (60 * 1000);
+			long thresholdMinutes = Long.parseLong(duration);
+			if (minutes >= thresholdMinutes) {
+				positiveHmacs.add(entry.getKey());
+			}
+		}
+
+		for (String hmac : positiveHmacs) {
+			System.out.println(hmac);
+		}
+
+		System.out.println("Size: " + positiveHmacs.size());
+
+		return null;
+		//return "attendance_marker";
+	}
 	
 	@RequestMapping(value = "/presencecalendar", method = RequestMethod.GET)
 	public String showCalendar(

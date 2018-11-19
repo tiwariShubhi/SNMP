@@ -30,8 +30,7 @@ public interface LogRepositoryCustom {
 	
 	public FootfallData footfallData(Date from, Date to);
 
-
-
+	public List<Log> findHashedApMacRunState(String ApHash, Date from, Date to);
 
 	public List<Log> findByMultipleHashedMac(String hash1, String hash2);
 	
