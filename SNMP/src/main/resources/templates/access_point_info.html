@@ -3,6 +3,11 @@
 
 <head>
 
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:100,300,400"/>
+
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/main.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/table_format.css}"/>
+
     <script  th:src="@{/assets/js/sha256.js}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script th:inline="javascript">
@@ -396,12 +401,13 @@
 	  /*]]>*/
   </script>
 
-    <title>Home | Track Yourself</title>
+    <title>Access Point Details</title>
 
 
 </head>
-<body style='color:black'>
-<div>
+<body class="joy">
+<section id="singleview" class="row-alt">
+<div class="lead container">
     <form id="access_point_info"  action="/apconnections" method="post" enctype="multipart/form-data">
         <div>
             Select building :
@@ -420,7 +426,7 @@
 
         <div>
             Date : <input type="date" id='from_date' name="fromDate"/>
-
+            <br></br><br></br>
         </div>
 
         <div>
@@ -434,10 +440,11 @@
         </div>
 
         <div>
-            <button id = "sbtn" class="waves-effect waves-light btn-joy" type="submit"  value="Track" onclick="search()">Track</button>
+            <button id="sbtn" class="btn-default" type="submit"  value="Track" onclick="search()">Track</button>
         </div>
     </form>
 </div>
+</section>
 
 </body>
 </html>

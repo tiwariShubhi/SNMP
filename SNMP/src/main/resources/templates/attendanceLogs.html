@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <link rel="stylesheet" th:href="@{/assets/stylesheets/table_format.css}"/>
+    <script  th:src="@{/assets/js/sha256.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+
+
+
+              $(document).ready(function() {
+                  var startDate = /*[[${startDate}]]*/;
+                  var endDate = /*[[${endDate}]]*/;
+                  //var startDate = "1542348000000";
+                  //var endDate = "1542348000000"
+                  //console.log(startDate);
+                  //console.log(endDate);
+                  for (var d = new Date(parseFloat(startDate));
+                    d <= new Date(parseFloat(endDate));
+                    d.setDate(d.getDate() + 1)) {
+
+                    $('#table_headings').append('<th>'+ d.getUTCDate().toString() + '/' + (d.getMonth()+1).toString() + '/' + d.getFullYear().toString() +'</th>');
+
+                  }
+                  var macs = /*[[${macs}]]*/;
+                  var logs = /*[[${logs}]]*/;
+                  //console.log(/*[[${macs}]]*/);
+                  //console.log(macs.length);
+                  for (var i = 0; i<macs.length; i++) {
+                      var bodyString = '';
+                      //$('#table_body').append('<tr><td>' + macs[i].toString());
+                      bodyString = bodyString + '<td>' + macs[i].toString();
+                      for (var j = 0; j< logs.length; j++) {
+                          if (logs[j][i].toString() == '0') {
+                              bodyString = bodyString + '<td bgcolor="##800000">Absent';
+                          }
+                          else {
+                              bodyString = bodyString + '<td bgcolor="#008000">Present';
+                          }
+
+                          //$('#table_body').append('<td>' + logs[j][i].toString());
+                      }
+                      $('#table_body').append('<tr>' + bodyString + '</tr>');
+                  }
+    	});
+
+
+       /*]]>*/
+    </script>
+
+    <title>Attendance Logs</title>
+
+
+</head>
+<body>
+<h2>Attendance Logs</h2>
+    <table border="1">
+        <thead>
+            <tr id="table_headings">
+                <th>Mac Addresses</th>
+            </tr>
+        </thead>
+        <tbody id="table_body"> </tbody>
+    </table>
+</body>
+</html>
+

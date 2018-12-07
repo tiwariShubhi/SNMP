@@ -1,37 +1,28 @@
 package com.joy.app.helper;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+public class ExcelHelper {
 
-
-
-
-
-public class ExcelHelper
-{
-	
-	
-	
-	public ExcelHelper()
-	{
-		
-	}
-	
-	
 	public ArrayList<String> readColExcel(FileInputStream fp,String ext,int colNo)
 	{
 		//colNo starts from 1
@@ -98,18 +89,18 @@ public class ExcelHelper
 //		}
 //	}
 //	
-//	public HSSFCellStyle getExcelCellStyle(HSSFWorkbook workbook, int foreGroundColor, int fillPattern, int horizontalAlignment, 
-//			int verticalAlignment, int borderTop, int borderLeft, int borderRight, int borderBottom, boolean bold, boolean underLine, 
-//			boolean wrapText, int fontSize, String fontName,short fontColor)
-//	{
-//		HSSFCellStyle cellStyle = workbook.createCellStyle();
-//		cellStyle.setFont(getFont(workbook, bold, underLine, fontSize, fontName,fontColor));   
-//		setCellColor(cellStyle, foreGroundColor, fillPattern);
-//		setCellAlignment(cellStyle, horizontalAlignment, verticalAlignment, wrapText);
-//		setCellBorder(cellStyle, borderTop, borderLeft, borderRight, borderBottom);
-//		
-//		return cellStyle;
-//	}
+	public HSSFCellStyle getExcelCellStyle(HSSFWorkbook workbook, int foreGroundColor, int fillPattern, int horizontalAlignment, 
+			int verticalAlignment, int borderTop, int borderLeft, int borderRight, int borderBottom, boolean bold, boolean underLine, 
+			boolean wrapText, int fontSize, String fontName,short fontColor)
+	{
+		HSSFCellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setFont(getFont(workbook, bold, underLine, fontSize, fontName,fontColor));   
+		setCellColor(cellStyle, foreGroundColor, fillPattern);
+		setCellAlignment(cellStyle, horizontalAlignment, verticalAlignment, wrapText);
+		setCellBorder(cellStyle, borderTop, borderLeft, borderRight, borderBottom);
+		
+		return cellStyle;
+	}
 //	
 //	public HSSFCellStyle getExcelCellColor(HSSFWorkbook workbook, int foreGroundColor, int fillPattern)
 //	{
@@ -117,45 +108,45 @@ public class ExcelHelper
 //		setCellColor(cellStyle, foreGroundColor, fillPattern);
 //		return cellStyle;
 //	}
-//	private void setCellBorder(HSSFCellStyle cellStyle, int borderTop, int borderLeft, int borderRight, int borderBottom)
-//	{
-//		cellStyle.setBorderTop((short) borderTop);
-//		cellStyle.setBorderLeft((short) borderLeft);
-//		cellStyle.setBorderRight((short) borderRight);
-//		cellStyle.setBorderBottom((short) borderBottom);
-//	}
+	private void setCellBorder(HSSFCellStyle cellStyle, int borderTop, int borderLeft, int borderRight, int borderBottom)
+	{
+		cellStyle.setBorderTop(BorderStyle.valueOf((short) borderTop));
+		cellStyle.setBorderLeft(BorderStyle.valueOf((short) borderLeft));
+		cellStyle.setBorderRight(BorderStyle.valueOf((short) borderRight));
+		cellStyle.setBorderBottom(BorderStyle.valueOf((short) borderBottom));
+	}
+	
+	private void setCellAlignment(HSSFCellStyle cellStyle, int horizontalAlignment, int verticalAlignment, boolean wrapText)
+	{
+		cellStyle.setAlignment(HorizontalAlignment.forInt(horizontalAlignment));  
+		cellStyle.setVerticalAlignment(VerticalAlignment.forInt(verticalAlignment));   
+		cellStyle.setWrapText(wrapText);
+	}
 //	
-//	private void setCellAlignment(HSSFCellStyle cellStyle, int horizontalAlignment, int verticalAlignment, boolean wrapText)
-//	{
-//		cellStyle.setAlignment((short)horizontalAlignment);  
-//		cellStyle.setVerticalAlignment((short)verticalAlignment);   
-//		cellStyle.setWrapText(wrapText);
-//	}
+	private void setCellColor(HSSFCellStyle cellStyle, int foreGroundColor, int fillPattern)
+	{
+		cellStyle.setFillForegroundColor((short)foreGroundColor); 
+		
+		cellStyle.setFillPattern(FillPatternType.forInt(fillPattern));   
+	}
 //	
-//	private void setCellColor(HSSFCellStyle cellStyle, int foreGroundColor, int fillPattern)
-//	{
-//		cellStyle.setFillForegroundColor((short)foreGroundColor); 
-//		
-//		cellStyle.setFillPattern((short)fillPattern);   
-//	}
-//	
-//	private HSSFFont getFont(HSSFWorkbook workbook, boolean bold, boolean underLine, int fontSize, String fontName,short fontColor)
-//	{
-//		HSSFFont font = workbook.createFont();
-//		
-//		if(bold)
-//		{
-//			font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-//		}
-//		if(underLine)
-//		{
-//			font.setUnderline((byte)1);
-//		}
-//        font.setFontHeightInPoints((short)fontSize);
-//        font.setFontName(fontName);
-//        font.setColor(fontColor);
-//		return font;
-//	}
+	private HSSFFont getFont(HSSFWorkbook workbook, boolean bold, boolean underLine, int fontSize, String fontName,short fontColor)
+	{
+		HSSFFont font = workbook.createFont();
+		
+		if(bold)
+		{
+			font.setBold(bold);
+		}
+		if(underLine)
+		{
+			font.setUnderline((byte)1);
+		}
+        font.setFontHeightInPoints((short)fontSize);
+        font.setFontName(fontName);
+        font.setColor(fontColor);
+		return font;
+	}
 //	
 //	public void setBorderToRegion(HSSFWorkbook workbook, HSSFSheet sheet, String cellRange)
 //	{
@@ -225,28 +216,28 @@ public class ExcelHelper
 //		}
 //	}
 //	
-//	public void setCellValue(HSSFSheet sheet, int rowIndex, int colIndex, String message, HSSFCellStyle cellStyle, boolean isString)
-//	{
-//		HSSFRow row = sheet.getRow(rowIndex);
-//		// If row is null, then create new row
-//		if(null==row){
-//			row = sheet.createRow(rowIndex);
-//		}
-//		
-//		HSSFCell cell = row.getCell(colIndex);
-//		// If cell is null, then create new cell
-//		if(null==cell){
-//			cell = row.createCell(colIndex);
-//		}
-//		if(isString){
-//			cell.setCellValue(message);
-//		}else{
-//			cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-//			cell.setCellValue(Double.parseDouble(message));
-//		}
-//		cell.setCellStyle(cellStyle);	
-//	}
-//	
+	public void setCellValue(HSSFSheet sheet, int rowIndex, int colIndex, String message, HSSFCellStyle cellStyle, boolean isString)
+	{
+		HSSFRow row = sheet.getRow(rowIndex);
+		// If row is null, then create new row
+		if(null==row){
+			row = sheet.createRow(rowIndex);
+		}
+		
+		HSSFCell cell = row.getCell(colIndex);
+		// If cell is null, then create new cell
+		if(null==cell){
+			cell = row.createCell(colIndex);
+		}
+		if(isString){
+			cell.setCellValue(message);
+		}else{
+			//cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+			cell.setCellValue(Double.parseDouble(message));
+		}
+		cell.setCellStyle(cellStyle);	
+	}
+	
 //	public void setCellValueWithHyperlink(HSSFSheet sheet, int rowIndex, int colIndex, String message, HSSFCellStyle cellStyle, String drl)
 //	{
 //		CreationHelper createHelper = sheet.getWorkbook().getCreationHelper();
@@ -293,4 +284,3 @@ public class ExcelHelper
 //		cell.setCellStyle(cellStyle);	
 //	}
 }
-
